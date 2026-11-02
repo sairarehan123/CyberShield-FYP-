@@ -3,7 +3,3 @@ __pycache__/
 .vscode/
 .env
 results/
-results_pmt/
-node_modules/
-.expo/
-dist/
