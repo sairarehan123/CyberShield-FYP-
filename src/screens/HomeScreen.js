@@ -15,6 +15,11 @@ export default function HomeScreen({ navigation }) {
         <Text style={styles.sub}>Your dashboard is coming soon.</Text>
         <View style={{ width: '100%', marginTop: spacing.xl }}>
           <CustomButton
+            title="Start SeBIS Questionnaire"
+            onPress={() => navigation.navigate('SeBISIntro')}
+            style={{ marginBottom: spacing.md }}
+          />
+          <CustomButton
             variant="outline"
             title="Log Out"
             onPress={() => navigation.reset({ index: 0, routes: [{ name: 'Login' }] })}
