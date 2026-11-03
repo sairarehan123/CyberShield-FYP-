@@ -6,12 +6,6 @@ import OnboardingScreen from '../screens/OnboardingScreen';
 import LoginScreen from '../screens/LoginScreen';
 import SignUpScreen from '../screens/SignUpScreen';
 import HomeScreen from '../screens/HomeScreen';
-// Design A (original)
-import SeBISIntroScreen from '../screens/SeBISIntroScreen';
-import SeBISQuestionnaireScreen from '../screens/SeBISQuestionnaireScreen';
-import SeBISReviewScreen from '../screens/SeBISReviewScreen';
-import SeBISReportScreen from '../screens/SeBISReportScreen';
-// Design B (new)
 import AssessScreen from '../screens/AssessScreen';
 import AssessmentQuestionsScreen from '../screens/AssessmentQuestionsScreen';
 import AssessmentResultScreen from '../screens/AssessmentResultScreen';
@@ -27,11 +21,6 @@ export default function AppNavigator() {
         <Stack.Screen name="Login" component={LoginScreen} />
         <Stack.Screen name="SignUp" component={SignUpScreen} />
         <Stack.Screen name="Home" component={HomeScreen} />
-
-        <Stack.Screen name="SeBISIntro" component={SeBISIntroScreen} />
-        <Stack.Screen name="SeBISQuestionnaire" component={SeBISQuestionnaireScreen} />
-        <Stack.Screen name="SeBISReview" component={SeBISReviewScreen} />
-        <Stack.Screen name="SeBISReport" component={SeBISReportScreen} />
 
         <Stack.Screen name="Assess" component={AssessScreen} />
         <Stack.Screen name="AssessmentQuestions" component={AssessmentQuestionsScreen} options={{ gestureEnabled: false }} />

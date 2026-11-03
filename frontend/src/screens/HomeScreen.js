@@ -7,7 +7,6 @@ import { APP_NAME } from '../config/appConfig';
 import { colors, spacing, typography } from '../theme';
 
 // Placeholder - replace with the real dashboard later.
-// Two buttons so the supervisor can compare both SeBIS designs. Same backend behind both.
 export default function HomeScreen({ navigation }) {
   return (
     <ScreenBackground>
@@ -16,12 +15,7 @@ export default function HomeScreen({ navigation }) {
         <Text style={styles.sub}>Your dashboard is coming soon.</Text>
         <View style={{ width: '100%', marginTop: spacing.xl }}>
           <CustomButton
-            title="SeBIS - Design A (original)"
-            onPress={() => navigation.navigate('SeBISIntro')}
-            style={{ marginBottom: spacing.md }}
-          />
-          <CustomButton
-            title="SeBIS - Design B (new)"
+            title="Start SeBIS Questionnaire"
             onPress={() => navigation.navigate('Assess')}
             style={{ marginBottom: spacing.md }}
           />
