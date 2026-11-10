@@ -69,6 +69,52 @@ LOW_SCORE_MEANING = {
 }
 
 
+# ---------------------------------------------------------------------
+# TPB (Theory of Planned Behavior) - same idea, same DRAFT status.
+# For every TPB construct a LOW score is the "problem".
+# ---------------------------------------------------------------------
+SEBIS_TO_TPB = {
+    "device_securement": [
+        {"construct": "perceived_behavioral_control",
+         "why": "Locking devices is kept up when it feels easy and under your control."},
+        {"construct": "attitude",
+         "why": "People lock devices when they see it as a good and useful habit."},
+        {"construct": "subjective_norm",
+         "why": "Habits like locking screens spread when the people around you expect them."},
+    ],
+    "password_generation": [
+        {"construct": "perceived_behavioral_control",
+         "why": "Managing many strong passwords needs confidence and the right resources."},
+        {"construct": "attitude",
+         "why": "Strong passwords are used when they are seen as worth the effort."},
+        {"construct": "subjective_norm",
+         "why": "People choose stronger passwords when those around them expect it."},
+    ],
+    "proactive_awareness": [
+        {"construct": "attitude",
+         "why": "Checking links and sites happens when it is seen as useful."},
+        {"construct": "subjective_norm",
+         "why": "People stay careful online when those around them do."},
+        {"construct": "perceived_behavioral_control",
+         "why": "Verifying links needs the knowledge to know what to look for."},
+    ],
+    "updating": [
+        {"construct": "attitude",
+         "why": "Updates are installed when they are seen as useful."},
+        {"construct": "perceived_behavioral_control",
+         "why": "Updating needs the time, knowledge and control to do it."},
+        {"construct": "subjective_norm",
+         "why": "People keep software current when those around them expect it."},
+    ],
+}
+
+TPB_LOW_SCORE_MEANING = {
+    "attitude": "you do not see cybersecurity behaviors as good, useful or worthwhile",
+    "subjective_norm": "you do not feel that the people around you expect you to practice cybersecurity",
+    "perceived_behavioral_control": "you do not feel confident or in control of practicing cybersecurity behaviors",
+}
+
+
 def _related_with_scores(subscale, pmt_profile):
     related = []
     for link in SEBIS_TO_PMT[subscale]:
