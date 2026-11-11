@@ -81,3 +81,36 @@ export function submitPmt(userId, answers) {
 export function fetchCombinedProfile(userId) {
   return request(`/assessment/profile/${encodeURIComponent(userId)}`);
 }
+
+// ---------------------------------------------------------------------
+// TPB (Theory of Planned Behavior, 14 items) and TTAT (Technology Threat
+// Avoidance Theory, 35 items). Both use a 1-7 scale and the SAME userId.
+// ---------------------------------------------------------------------
+export function fetchTpbQuestions() {
+  return request('/assessment/tpb/questions');
+}
+
+export function submitTpb(userId, answers) {
+  return request('/assessment/tpb/score', {
+    method: 'POST',
+    body: JSON.stringify({ user_id: userId, answers }),
+  });
+}
+
+export function fetchTtatQuestions() {
+  return request('/assessment/ttat/questions');
+}
+
+export function submitTtat(userId, answers) {
+  return request('/assessment/ttat/score', {
+    method: 'POST',
+    body: JSON.stringify({ user_id: userId, answers }),
+  });
+}
+
+// THE main call for the result screens: SeBIS + every completed theory in ONE
+// profile, with the weak areas and the likely reasons (training_brief).
+// Returns a 404 error ("Complete SeBIS first") if the user has no SeBIS yet.
+export function fetchUserProfile(userId) {
+  return request(`/assessment/user-profile/${encodeURIComponent(userId)}`);
+}

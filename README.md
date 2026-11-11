@@ -1,39 +1,46 @@
-# CyberShield — FYP
+# CyberShield - FYP
 
 AI-powered mobile app for cybersecurity behavior assessment and personalized guidance.
 Supervisor: Naurin Farooq Khan
 
-## Current Status
-- **SeBIS** (16 items): records how a person usually behaves around their devices. Scoring engine with correct reverse-scoring. There is no retake and no attempt comparison.
-- **PMT** (30 items, 7-point scale, Kiran et al. 2025): records *why* — the person's motivation to protect their devices (threat severity, threat vulnerability, response efficacy, self-efficacy, response cost, security intention).
-- **SeBIS ↔ PMT link** (`backend/theory_linking.py`): for each SeBIS area, shows the PMT constructs that may explain it and names the most likely barrier. **The mapping is a DRAFT, not yet approved by the supervisor.**
-- FastAPI backend and React Native (Expo) screens for SeBIS (new design, connected to the backend). PMT screens are being built by a teammate.
+## What is built
+| Part | What it does |
+|---|---|
+| **SeBIS** (16 items, 1-5) | HOW the person behaves: device securement, password generation, proactive awareness, updating |
+| **PMT** (30 items, 1-7) | WHY - protection motivation (severity, vulnerability, response efficacy, self-efficacy, response cost, intention) |
+| **TPB** (14 items, 1-7) | WHY - attitude, subjective norm, perceived behavioral control |
+| **TTAT** (35 items, 1-7) | WHY - susceptibility, severity, threat, response effectiveness, self-efficacy, response cost |
+| **Unified profile** (`profiling.py`) | Combines SeBIS + every completed theory: weak areas, likely reasons, and a `training_brief` for the AI training step |
+
+The SeBIS-to-theory mappings (`theory_linking.py`) are a **DRAFT**, not yet approved by the supervisor.
+Not built yet: AI-generated training, Supabase connection, login, admin dashboard.
 
 ## Folder layout
 ```
-backend/    Python logic + API (run everything from inside this folder)
-  sebis_scoring.py      SeBIS scoring engine
-  sebis_assessment.py   SeBIS questionnaire (terminal) + save/load results
-  pmt_scoring.py        PMT scoring engine
-  pmt_assessment.py     PMT questionnaire (terminal) + shows the SeBIS↔PMT link
-  theory_linking.py     SeBIS area → PMT construct mapping (DRAFT)
-  main.py               FastAPI wrapper used by the mobile app
-  generate_fake_users.py  generates 500 fake users to test SeBIS scoring
-frontend/   React Native (Expo) app (run everything from inside this folder)
-  App.js, index.js, app.json, package.json
-  src/screens/      Splash, Onboarding, Login, SignUp, Home + SeBIS (Assess, AssessmentQuestions, AssessmentResult)
-  src/components/   shared UI components
-  src/services/     sebisApi.js (talks to the backend), guestUser.js
-  src/theme/        colours, spacing, typography
-docs/       guides (e.g. PMT UI guide for the teammate)
+backend/     Python logic + API (run everything from inside this folder)
+  sebis_scoring.py / sebis_assessment.py   SeBIS scoring + terminal questionnaire + saved results
+  pmt_scoring.py   / pmt_assessment.py     PMT
+  tpb_scoring.py   / tpb_assessment.py     TPB
+  ttat_scoring.py  / ttat_assessment.py    TTAT
+  theory_linking.py   SeBIS area -> theory construct mappings (DRAFT) + plain-English meanings
+  profiling.py        one profile from SeBIS + all theories; add a theory = one entry in THEORIES
+  main.py             FastAPI wrapper used by the mobile app
+  generate_fake_users.py, generate_fake_pmt_users.py (+ the two .csv files)   fake users for testing
+frontend/    React Native (Expo) app (run everything from inside this folder)
+  src/screens/ components/ navigation/ services/ theme/ utils/
+docs/
+  API_GUIDE.md        every endpoint, scales, real response examples - START HERE for the app
 ```
-Saved results go to `backend/results/` (SeBIS) and `backend/results_pmt/` (PMT); both are git-ignored.
+Each theory has the same two files (`*_scoring.py` = maths, `*_assessment.py` = questionnaire + saving).
+Saved results go to `backend/results*/` and are git-ignored.
 
 ## Run in the terminal (no app needed)
 ```
 cd backend
-python sebis_assessment.py     # welcome -> name -> 16 questions (1-5) -> profile
-python pmt_assessment.py       # same name -> 30 statements (1-7) -> profile + SeBIS↔PMT link
+python sebis_assessment.py     # do this first (asks for a name)
+python pmt_assessment.py       # same name
+python tpb_assessment.py       # same name
+python ttat_assessment.py      # same name -> ends with the unified profile
 ```
 
 ## Run the API
@@ -42,17 +49,9 @@ cd backend
 python -m pip install -r requirements.txt
 python -m uvicorn main:app --reload --host 0.0.0.0 --port 8000
 ```
-Docs: http://localhost:8000/docs
-
-| Endpoint | Purpose |
-|---|---|
-| `GET  /assessment/sebis/questions` | the 16 SeBIS questions |
-| `POST /assessment/sebis/score` | `{user_id, answers}` → profile |
-| `GET  /assessment/pmt/questions` | the 30 PMT questions |
-| `POST /assessment/pmt/score` | `{user_id, answers}` → profile |
-| `GET  /assessment/profile/{user_id}` | latest SeBIS + latest PMT + `theory_links` |
-
-The same `user_id` must be used for SeBIS and PMT — that is what links them.
+Docs in the browser: http://localhost:8000/docs - full guide: `docs/API_GUIDE.md`.
+The main endpoint for the result screens is `GET /assessment/user-profile/{user_id}`.
+The same `user_id` must be used for every questionnaire - that is what links them.
 
 ## Run the app
 ```
@@ -60,9 +59,9 @@ cd frontend
 npm install
 npx expo install @react-native-async-storage/async-storage
 ```
-Create a file called `.env` inside the `frontend` folder (git-ignored) with your backend address:
-```
-EXPO_PUBLIC_API_URL=http://<your-computer's-IPv4>:8000
-```
-(Android emulator: `http://10.0.2.2:8000`.) Start the backend first, then in `frontend` run `npx expo start -c`.
-Phone and computer must be on the same WiFi. Use the Expo Go version that matches the project's Expo SDK.
+Create `frontend/.env` (git-ignored): `EXPO_PUBLIC_API_URL=http://<your-computer's-IPv4>:8000`
+(Android emulator: `http://10.0.2.2:8000`). Start the backend first, then `npx expo start -c` in `frontend`.
+Phone and computer on the same WiFi. Use the Expo Go version that matches the project's Expo SDK.
+
+## Branches
+`main` is untouched. Work is on `sebis-pmt-logic`.

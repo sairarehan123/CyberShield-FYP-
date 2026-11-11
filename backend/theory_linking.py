@@ -115,6 +115,57 @@ TPB_LOW_SCORE_MEANING = {
 }
 
 
+# ---------------------------------------------------------------------
+# TTAT (Technology Threat Avoidance Theory) - same idea, same DRAFT status.
+# For every TTAT construct a LOW score is the "problem".
+# (response_cost is reverse-scored in ttat_scoring.py, so low = the person
+# sees security software as costly / inconvenient.)
+# ---------------------------------------------------------------------
+SEBIS_TO_TTAT = {
+    "device_securement": [
+        {"construct": "self_efficacy",
+         "why": "Locking devices is kept up when you feel able to set it up without help."},
+        {"construct": "response_cost",
+         "why": "Locking screens and using passcodes adds small, repeated inconveniences."},
+        {"construct": "response_effectiveness",
+         "why": "People lock devices when they believe protection really keeps intruders out."},
+    ],
+    "password_generation": [
+        {"construct": "response_cost",
+         "why": "Unique, strong passwords take effort and change how you use your accounts."},
+        {"construct": "perceived_threat",
+         "why": "People bother with strong passwords when a breach feels like a real danger to them."},
+        {"construct": "self_efficacy",
+         "why": "Managing many strong passwords depends on feeling able to do it alone."},
+    ],
+    "proactive_awareness": [
+        {"construct": "perceived_susceptibility",
+         "why": "Checking links and sites depends on feeling that you could be the target."},
+        {"construct": "perceived_threat",
+         "why": "People stay alert when breaches feel like a danger to their privacy and data."},
+        {"construct": "perceived_severity",
+         "why": "People stay careful when they see the consequences of a breach as serious."},
+    ],
+    "updating": [
+        {"construct": "response_effectiveness",
+         "why": "Updates are installed when people believe protection software prevents breaches."},
+        {"construct": "response_cost",
+         "why": "Update prompts interrupt work and can cause problems, so they feel costly."},
+        {"construct": "perceived_susceptibility",
+         "why": "Unpatched software matters more to people who feel exposed to a breach."},
+    ],
+}
+
+TTAT_LOW_SCORE_MEANING = {
+    "perceived_susceptibility": "you do not feel that you could personally be the target of a security breach",
+    "perceived_severity": "you do not see a security breach as a serious problem for you",
+    "perceived_threat": "you do not feel that security breaches threaten your privacy, data or devices",
+    "response_effectiveness": "you doubt that security software really prevents breaches",
+    "self_efficacy": "you do not feel able to install and use security software on your own",
+    "response_cost": "you find security software too time-consuming, costly or inconvenient",
+}
+
+
 def _related_with_scores(subscale, pmt_profile):
     related = []
     for link in SEBIS_TO_PMT[subscale]:

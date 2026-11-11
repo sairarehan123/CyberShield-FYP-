@@ -1,7 +1,7 @@
 """
 CyberShield - SeBIS API
 
-Wraps the SeBIS, PMT and TPB logic as a REST API for the React Native app.
+Wraps the SeBIS, PMT, TPB and TTAT logic as a REST API for the React Native app.
 There is no retake / attempt comparison: each submission is saved, and
 the latest SeBIS + latest PMT result are what get linked together. Does NOT duplicate the scoring
 formulas - it only calls the functions already built and tested.
@@ -29,6 +29,8 @@ import pmt_scoring
 import pmt_assessment
 import tpb_scoring
 import tpb_assessment
+import ttat_scoring
+import ttat_assessment
 from profiling import build_user_profile
 from theory_linking import link_sebis_to_pmt
 
@@ -318,8 +320,74 @@ def get_tpb_result(assessment_id: str):
 
 
 # =====================================================================
+# TTAT (Technology Threat Avoidance Theory) assessment - 35 items, 7-point scale
+# Same flow as PMT and TPB, saved separately in results_ttat/.
+# =====================================================================
+TTAT_VALID_ITEM_IDS = {item["id"] for item in ttat_scoring.TTAT_ITEMS}
+TTAT_ANSWER_SCALE = [
+    {"value": v, "label": label} for v, label in ttat_assessment.SCALE_LABELS.items()
+]
+
+
+@app.get("/assessment/ttat/questions")
+def get_ttat_questions():
+    questions = [
+        {"id": item["id"], "order": i, "text": item["text"]}
+        for i, item in enumerate(ttat_scoring.TTAT_ITEMS, start=1)
+    ]
+    return {
+        "total_questions": len(questions),
+        "answer_scale": TTAT_ANSWER_SCALE,
+        "questions": questions,
+    }
+
+
+@app.post("/assessment/ttat/score")
+def submit_ttat_assessment(payload: SubmitAssessmentRequest):
+    answers = payload.answers
+    user_id = payload.user_id.strip()
+
+    if not user_id:
+        raise HTTPException(status_code=400, detail="user_id is required.")
+
+    missing = TTAT_VALID_ITEM_IDS - set(answers.keys())
+    if missing:
+        raise HTTPException(status_code=400, detail=f"Missing answers for: {sorted(missing)}")
+
+    unknown = set(answers.keys()) - TTAT_VALID_ITEM_IDS
+    if unknown:
+        raise HTTPException(status_code=400, detail=f"Unknown question id(s): {sorted(unknown)}")
+
+    for item_id, value in answers.items():
+        if not isinstance(value, int) or value < 1 or value > 7:
+            raise HTTPException(
+                status_code=400,
+                detail=f"Answer for {item_id} must be an integer from 1 to 7.",
+            )
+
+    # The backend calculates the score itself - never trusts the frontend.
+    profile = ttat_scoring.build_profile(answers)
+    saved_record = ttat_assessment.save_result(user_id, answers, profile)
+
+    return {
+        "assessment_id": saved_record["assessment_id"],
+        "user_id": user_id,
+        "timestamp": saved_record["timestamp"],
+        "profile": profile,
+    }
+
+
+@app.get("/assessment/ttat/results/{assessment_id}")
+def get_ttat_result(assessment_id: str):
+    record = ttat_assessment.get_result_by_id(assessment_id)
+    if record is None:
+        raise HTTPException(status_code=404, detail="Assessment not found.")
+    return record
+
+
+# =====================================================================
 # Unified user profile: latest SeBIS + the latest result of EVERY theory
-# completed (PMT, TPB, and later TTAT), with the weak areas, their likely
+# completed (PMT, TPB and TTAT), with the weak areas, their likely
 # reasons, and the "training_brief" the AI training step reads.
 # Read-only; theories not yet completed are simply listed as missing.
 # (/assessment/profile/{user_id} above is unchanged.)

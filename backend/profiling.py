@@ -2,7 +2,7 @@
 CyberShield - User profiling (SeBIS + every completed theory)
 
 Combines a user's latest SeBIS result with the latest result of EVERY theory
-that has been completed (PMT and TPB now; TTAT later) into ONE profile, and
+that has been completed (PMT, TPB and TTAT) into ONE profile, and
 prepares the "training brief" that the AI training step will read.
 
 How it stays flexible
@@ -26,6 +26,7 @@ to 0-1 (normalized), so a 1-7 score and a 1-5 score can sit side by side.
 import theory_linking
 import pmt_assessment
 import tpb_assessment
+import ttat_assessment
 from sebis_assessment import get_latest_result as get_latest_sebis
 
 THEORIES = [
@@ -43,6 +44,14 @@ THEORIES = [
         "assessment": tpb_assessment,
         "mapping": theory_linking.SEBIS_TO_TPB,
         "meanings": theory_linking.TPB_LOW_SCORE_MEANING,
+        "scale": (1, 7),
+    },
+    {
+        "key": "ttat",
+        "label": "Technology Threat Avoidance Theory",
+        "assessment": ttat_assessment,
+        "mapping": theory_linking.SEBIS_TO_TTAT,
+        "meanings": theory_linking.TTAT_LOW_SCORE_MEANING,
         "scale": (1, 7),
     },
 ]
