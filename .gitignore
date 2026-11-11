@@ -7,3 +7,12 @@ results_pmt/
 node_modules/
 .expo/
 dist/
+# Python virtual environment
+backend/venv/
+
+# macOS system files
+.DS_Store
+
+# Local environment files
+.env.*
+!.env.example
