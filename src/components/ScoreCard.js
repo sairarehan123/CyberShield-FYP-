@@ -19,6 +19,7 @@ export default function ScoreCard({ overallScore, overallLevel }) {
   const levelColor = LEVEL_COLORS[overallLevel] || colors.primary;
 
   const numericScore = Number(overallScore);
+
   const displayScore = Number.isFinite(numericScore)
     ? numericScore.toFixed(2)
     : '—';
@@ -29,10 +30,12 @@ export default function ScoreCard({ overallScore, overallLevel }) {
 
   return (
     <View style={[styles.card, shadow.soft]}>
+
       <Text style={styles.title}>
         Your Overall Security Score
       </Text>
 
+      {/* SCORE DISPLAY */}
       <View style={styles.scoreRow}>
         <Text
           style={styles.scoreValue}
@@ -48,6 +51,7 @@ export default function ScoreCard({ overallScore, overallLevel }) {
         </Text>
       </View>
 
+      {/* PERFORMANCE LEVEL */}
       <View
         style={[
           styles.levelBadge,
@@ -59,6 +63,7 @@ export default function ScoreCard({ overallScore, overallLevel }) {
         </Text>
       </View>
 
+      {/* PROGRESS BAR */}
       <View style={styles.track}>
         <View
           style={[
@@ -71,23 +76,28 @@ export default function ScoreCard({ overallScore, overallLevel }) {
         />
       </View>
 
+      {/* EXPLANATION */}
       <Text style={styles.explanation}>
         {LEVEL_EXPLANATIONS[overallLevel] || ''}
       </Text>
+
     </View>
   );
 }
 
 const styles = StyleSheet.create({
+
   card: {
     backgroundColor: colors.white,
     borderRadius: radius.xl,
     borderWidth: 1,
     borderColor: colors.border,
     padding: spacing.xl,
+    paddingTop: spacing.xl + spacing.sm,
     alignItems: 'center',
     marginBottom: spacing.lg,
     width: '100%',
+    overflow: 'visible',
   },
 
   title: {
@@ -99,27 +109,32 @@ const styles = StyleSheet.create({
 
   scoreRow: {
     flexDirection: 'row',
-    alignItems: 'flex-end',
+    alignItems: 'center',
     justifyContent: 'center',
     width: '100%',
+    minHeight: 68,
+    paddingTop: 4,
+    paddingBottom: 4,
     marginBottom: spacing.sm,
+    overflow: 'visible',
   },
 
   scoreValue: {
-    ...typography.h1,
     fontSize: 48,
+    lineHeight: 62,
+    fontWeight: '800',
     color: colors.primary,
-    flexShrink: 1,
-    includeFontPadding: false,
+    flexShrink: 0,
+    includeFontPadding: true,
     textAlign: 'center',
   },
 
   scoreOutOf: {
     ...typography.h3,
     color: colors.textSecondary,
-    marginBottom: spacing.xs,
     marginLeft: spacing.xs,
     flexShrink: 0,
+    alignSelf: 'center',
   },
 
   levelBadge: {
@@ -151,5 +166,7 @@ const styles = StyleSheet.create({
     ...typography.body,
     color: colors.textSecondary,
     textAlign: 'center',
+    lineHeight: 23,
   },
+
 });

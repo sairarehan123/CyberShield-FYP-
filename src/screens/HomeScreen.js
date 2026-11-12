@@ -1,3 +1,4 @@
+
 import React from 'react';
 import {
   Alert,
@@ -34,24 +35,10 @@ const C = {
   border: '#E7D7E7',
 };
 
-const EXPECT = [
-  {
-    icon: 'time-outline',
-    text: 'Short questions about your cybersecurity habits.',
-  },
-  {
-    icon: 'chatbubble-ellipses-outline',
-    text: 'There are no right or wrong answers. Answer honestly.',
-  },
-  {
-    icon: 'shield-checkmark-outline',
-    text: 'Understand your security behaviour and improve your digital safety.',
-  },
-];
-
-export default function HomeScreen({ navigation, onSwitchTab }) {
+export default function HomeScreen({ onSwitchTab }) {
   return (
     <ScreenContainer>
+
       {/* HEADER */}
       <View style={styles.top}>
         <View style={{ flex: 1 }}>
@@ -90,12 +77,14 @@ export default function HomeScreen({ navigation, onSwitchTab }) {
         </Pressable>
       </View>
 
+      {/* HEADLINE */}
       <Text style={styles.headline}>
         {APP_TAGLINE}
       </Text>
 
       {/* HERO SECTION */}
       <View style={styles.hero}>
+
         <View style={styles.heroDecor}>
           <View style={[styles.decorBar, styles.barOne]} />
           <View style={[styles.decorBar, styles.barTwo]} />
@@ -137,18 +126,22 @@ export default function HomeScreen({ navigation, onSwitchTab }) {
         </View>
       </View>
 
-      {/* ASSESSMENTS */}
+      {/* ASSESSMENTS SHORTCUT */}
       <SectionHeader
-        title="Explore Assessments"
+        title="Your Assessments"
         style={{ marginTop: spacing.xl }}
       />
 
-      {/* SEBIS CARD */}
-      <Card style={styles.assessmentCard}>
-        <View style={styles.cardHeader}>
+      <Card
+        onPress={() => onSwitchTab?.('assess')}
+        accessibilityLabel="View all assessments"
+        style={styles.assessmentShortcut}
+      >
+        <View style={styles.learningRow}>
+
           <View style={styles.assessmentIcon}>
             <Ionicons
-              name="shield-checkmark-outline"
+              name="clipboard-outline"
               size={25}
               color={C.mauveDark}
             />
@@ -156,120 +149,27 @@ export default function HomeScreen({ navigation, onSwitchTab }) {
 
           <View style={{ flex: 1 }}>
             <Text style={styles.cardTitle}>
-              SeBIS Assessment
+              Explore Assessments
             </Text>
 
-            <Text style={styles.cardSubtitle}>
-              Security Behaviour Intentions Scale
+            <Text style={styles.description}>
+              Discover your cybersecurity behaviour and
+              protection motivation.
+            </Text>
+
+            <Text style={styles.shortcutText}>
+              View all assessments →
             </Text>
           </View>
 
-          <View style={styles.tag}>
-            <Text style={styles.tagText}>BEHAVIOUR</Text>
-          </View>
+          <ArrowChip />
+
         </View>
-
-        <Text style={styles.description}>
-          Evaluate your everyday cybersecurity behaviour and
-          understand your current security practices.
-        </Text>
-
-        <Pressable
-          style={styles.primaryButton}
-          onPress={() => navigation.navigate('SeBISIntro')}
-        >
-          <Text style={styles.primaryButtonText}>
-            Start SeBIS Assessment
-          </Text>
-
-          <Ionicons
-            name="arrow-forward"
-            size={19}
-            color={C.white}
-          />
-        </Pressable>
       </Card>
 
-      {/* PMT CARD */}
-      <Card style={styles.assessmentCard}>
-        <View style={styles.cardHeader}>
-          <View style={styles.assessmentIcon}>
-            <Ionicons
-              name="analytics-outline"
-              size={25}
-              color={C.mauveDark}
-            />
-          </View>
-
-          <View style={{ flex: 1 }}>
-            <Text style={styles.cardTitle}>
-              PMT Assessment
-            </Text>
-
-            <Text style={styles.cardSubtitle}>
-              Protection Motivation Theory
-            </Text>
-          </View>
-
-          <View style={styles.tag}>
-            <Text style={styles.tagText}>MOTIVATION</Text>
-          </View>
-        </View>
-
-        <Text style={styles.description}>
-          Explore your threat appraisal, coping appraisal,
-          and motivation to adopt protective security behaviours.
-        </Text>
-
-        <Pressable
-          style={styles.primaryButton}
-          onPress={() => navigation.navigate('PMTIntro')}
-        >
-          <Text style={styles.primaryButtonText}>
-            Start PMT Assessment
-          </Text>
-
-          <Ionicons
-            name="arrow-forward"
-            size={19}
-            color={C.white}
-          />
-        </Pressable>
-      </Card>
-
-      {/* WHAT TO EXPECT */}
+      {/* LEARNING SECTION */}
       <SectionHeader
-        title="What to expect"
-        style={{ marginTop: spacing.xl }}
-      />
-
-      <Card style={styles.expectCard}>
-        {EXPECT.map((item, index) => (
-          <View
-            key={item.icon}
-            style={[
-              styles.expectRow,
-              index > 0 && styles.expectSpacing,
-            ]}
-          >
-            <View style={styles.expectIcon}>
-              <Ionicons
-                name={item.icon}
-                size={21}
-                color={C.mauveDark}
-              />
-            </View>
-
-            <Text style={styles.expectText}>
-              {item.text}
-            </Text>
-          </View>
-        ))}
-      </Card>
-
-      {/* LEARNING */}
-      <SectionHeader
-        title="Keep learning"
+        title="Keep Learning"
         style={{ marginTop: spacing.xl }}
       />
 
@@ -278,6 +178,7 @@ export default function HomeScreen({ navigation, onSwitchTab }) {
         accessibilityLabel="Open Learn"
       >
         <View style={styles.learningRow}>
+
           <View style={styles.learningIcon}>
             <Ionicons
               name="book-outline"
@@ -298,13 +199,17 @@ export default function HomeScreen({ navigation, onSwitchTab }) {
           </View>
 
           <ArrowChip />
+
         </View>
       </Card>
+
     </ScreenContainer>
   );
 }
 
 const styles = StyleSheet.create({
+
+  // HEADER
   top: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -337,6 +242,7 @@ const styles = StyleSheet.create({
     marginLeft: spacing.sm,
   },
 
+  // HERO SECTION
   hero: {
     backgroundColor: C.pink,
     borderRadius: 23,
@@ -421,15 +327,10 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
 
-  assessmentCard: {
-    marginBottom: spacing.md,
+  // ASSESSMENTS SHORTCUT
+  assessmentShortcut: {
     borderWidth: 1,
     borderColor: C.border,
-  },
-
-  cardHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
   },
 
   assessmentIcon: {
@@ -442,29 +343,17 @@ const styles = StyleSheet.create({
     marginRight: spacing.md,
   },
 
+  shortcutText: {
+    ...typography.caption,
+    color: C.mauveDark,
+    fontWeight: '700',
+    marginTop: spacing.md,
+  },
+
+  // SHARED CARD STYLES
   cardTitle: {
     ...typography.bodyStrong,
     color: C.plum,
-  },
-
-  cardSubtitle: {
-    ...typography.caption,
-    color: C.secondary,
-    marginTop: 3,
-  },
-
-  tag: {
-    backgroundColor: C.pinkSoft,
-    borderRadius: 20,
-    paddingHorizontal: 9,
-    paddingVertical: 5,
-  },
-
-  tagText: {
-    fontSize: 9,
-    fontWeight: '700',
-    color: C.mauveDark,
-    letterSpacing: 0.4,
   },
 
   description: {
@@ -474,55 +363,7 @@ const styles = StyleSheet.create({
     lineHeight: 21,
   },
 
-  primaryButton: {
-    minHeight: 49,
-    borderRadius: 14,
-    backgroundColor: C.mauve,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingHorizontal: spacing.md,
-    marginTop: spacing.lg,
-  },
-
-  primaryButtonText: {
-    color: C.white,
-    fontSize: 14,
-    fontWeight: '700',
-    marginRight: spacing.sm,
-  },
-
-  expectCard: {
-    borderWidth: 1,
-    borderColor: C.border,
-  },
-
-  expectRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-
-  expectSpacing: {
-    marginTop: spacing.lg,
-  },
-
-  expectIcon: {
-    width: 42,
-    height: 42,
-    borderRadius: 14,
-    backgroundColor: C.pinkSoft,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginRight: spacing.md,
-  },
-
-  expectText: {
-    ...typography.body,
-    color: C.secondary,
-    flex: 1,
-    lineHeight: 21,
-  },
-
+  // LEARNING SECTION
   learningRow: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -537,4 +378,5 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginRight: spacing.md,
   },
+
 });
