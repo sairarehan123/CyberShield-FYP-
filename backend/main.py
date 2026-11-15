@@ -10,9 +10,12 @@ Run with:
     uvicorn main:app --reload --host 0.0.0.0 --port 8000
 """
 
-from typing import Dict
+import threading
+import time
+from typing import Dict, Optional
 
 from fastapi import FastAPI, HTTPException
+from fastapi.responses import HTMLResponse
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
@@ -32,6 +35,10 @@ import tpb_assessment
 import ttat_scoring
 import ttat_assessment
 from profiling import build_user_profile
+import training
+import training_check
+import training_drill
+import training_chat
 from theory_linking import link_sebis_to_pmt
 
 app = FastAPI(title="CyberShield SeBIS API")
@@ -61,6 +68,31 @@ ANSWER_SCALE = [
 class SubmitAssessmentRequest(BaseModel):
     user_id: str
     answers: Dict[str, int]  # e.g. {"F1": 4, "F2": 5, ...} - all 16 required
+
+
+class SubmitCheckRequest(BaseModel):
+    quiz_answers: Dict[str, str]  # e.g. {"q1": "b", "q2": "a", ... "q5": "d"}
+
+
+class ConsentRequest(BaseModel):
+    accepted: bool = True
+
+
+class ContactRequest(BaseModel):
+    email: Optional[str] = None
+    push_token: Optional[str] = None
+
+
+class ChatRequest(BaseModel):
+    message: str
+
+
+class TheoryRequest(BaseModel):
+    theory: str
+
+
+class BackgroundRequest(BaseModel):
+    background: str
 
 
 # ---------------------------------------------------------------------
@@ -401,6 +433,193 @@ def get_user_profile(user_id: str):
             detail="No SeBIS assessment found for this user. Complete SeBIS first.",
         )
     return profile
+
+
+# =====================================================================
+# AI training (Groq) - ONE area at a time, weakest first.
+#   generate : training for the user's current area (the weakest not finished yet)
+#   complete : the user finished it -> the next weakest area unlocks
+#   current  : the saved plan for the area in progress
+# The key lives in backend/.env - see training.py.
+# =====================================================================
+@app.post("/training/{user_id}/generate")
+def generate_training_plan(user_id: str, refresh: bool = False):
+    try:
+        return training.generate_training(user_id.strip(), refresh=refresh)
+    except LookupError as e:
+        raise HTTPException(status_code=404, detail=str(e))
+    except training.TrainingUnavailable as e:
+        raise HTTPException(status_code=503, detail=str(e))
+
+
+@app.post("/training/{user_id}/check/start")
+def start_training_check(user_id: str):
+    """The QUIZ for the area the user is working on (no correct answers inside)."""
+    try:
+        return training_check.start_check(user_id.strip())
+    except LookupError as e:
+        raise HTTPException(status_code=404, detail=str(e))
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except training.TrainingUnavailable as e:
+        raise HTTPException(status_code=503, detail=str(e))
+
+
+@app.post("/training/{user_id}/check/submit")
+def submit_training_check(user_id: str, payload: SubmitCheckRequest):
+    """Grades the quiz on the server. Passing it schedules the phishing drill."""
+    try:
+        return training_check.submit_check(user_id.strip(), payload.quiz_answers)
+    except LookupError as e:
+        raise HTTPException(status_code=404, detail=str(e))
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+
+# ---------------- Progress check = simulated phishing messages over several days ----------------
+@app.get("/training/{user_id}/drill")
+def get_training_drill(user_id: str):
+    """State: none | consent_required | preparing | scheduled | in_progress | resolved. Holds the INBOX."""
+    return training_drill.get_drill(user_id.strip())
+
+
+@app.post("/training/{user_id}/drill/{message_id}/click")
+def click_training_message(user_id: str, message_id: str):
+    """The user tapped the link in a simulated message -> fell victim. Returns the debrief."""
+    try:
+        return training_drill.click_message(user_id.strip(), message_id)
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+
+@app.post("/training/{user_id}/drill/{message_id}/report")
+def report_training_message(user_id: str, message_id: str):
+    """The user pressed 'Report phishing' on a message. Returns the debrief."""
+    try:
+        return training_drill.report_message(user_id.strip(), message_id)
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+
+@app.get("/sim/click/{token}", response_class=HTMLResponse, include_in_schema=False)
+def phishing_drill_link(token: str):
+    """The tracking link inside a simulated email / message (opens in any browser)."""
+    try:
+        result = training_drill.click_by_token(token)
+    except ValueError:
+        result = None
+    return HTMLResponse(training_drill.render_click_page(result))
+
+
+@app.post("/training/{user_id}/consent")
+def give_training_consent(user_id: str, payload: ConsentRequest):
+    """One-time agreement to receive simulated security messages."""
+    try:
+        return training_chat.give_consent(user_id.strip(), payload.accepted)
+    except LookupError as e:
+        raise HTTPException(status_code=404, detail=str(e))
+
+
+@app.post("/training/{user_id}/contact")
+def set_training_contact(user_id: str, payload: ContactRequest):
+    """Where simulated messages are sent when the app is closed: e-mail and / or Expo push token."""
+    try:
+        return training_drill.set_contact(user_id.strip(), payload.email, payload.push_token)
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+
+# ---------------- The training CHATBOT (this is what the training screen uses) ----------------
+@app.get("/training/{user_id}/chat")
+def get_training_chat(user_id: str):
+    """The whole chat, the current stage, the steps / quiz / inbox, and the actions allowed now."""
+    try:
+        return training_chat.get_chat(user_id.strip())
+    except LookupError as e:
+        raise HTTPException(status_code=404, detail=str(e))
+    except training.TrainingUnavailable as e:
+        raise HTTPException(status_code=503, detail=str(e))
+
+
+@app.post("/training/{user_id}/chat")
+def send_training_chat_message(user_id: str, payload: ChatRequest):
+    """The user asks the coach something. Off-topic questions are politely redirected."""
+    try:
+        return training_chat.send_message(user_id.strip(), payload.message)
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except training.TrainingUnavailable as e:
+        raise HTTPException(status_code=503, detail=str(e))
+
+
+@app.post("/training/{user_id}/chat/quiz")
+def start_training_chat_quiz(user_id: str):
+    """The coach starts the 5-question quiz."""
+    try:
+        return training_chat.begin_quiz(user_id.strip())
+    except LookupError as e:
+        raise HTTPException(status_code=404, detail=str(e))
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except training.TrainingUnavailable as e:
+        raise HTTPException(status_code=503, detail=str(e))
+
+
+@app.post("/training/{user_id}/chat/quiz/submit")
+def submit_training_chat_quiz(user_id: str, payload: SubmitCheckRequest):
+    """Grades the quiz; the coach explains the mistakes."""
+    try:
+        return training_chat.answer_quiz(user_id.strip(), payload.quiz_answers)
+    except LookupError as e:
+        raise HTTPException(status_code=404, detail=str(e))
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+
+@app.post("/training/{user_id}/theory")
+def set_training_theory(user_id: str, payload: TheoryRequest):
+    """The user chooses the theory (pmt | tpb | ttat) the training is based on. Returns the chat state."""
+    try:
+        return training_chat.set_theory(user_id.strip(), payload.theory)
+    except LookupError as e:
+        raise HTTPException(status_code=404, detail=str(e))
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except training.TrainingUnavailable as e:
+        raise HTTPException(status_code=503, detail=str(e))
+
+
+@app.post("/training/{user_id}/background")
+def set_training_background(user_id: str, payload: BackgroundRequest):
+    """technical | non_technical (asked once, e.g. at signup)."""
+    try:
+        return training_chat.set_background(user_id.strip(), payload.background)
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+
+# ---------------- Timer: sends the due messages even when nobody has the app open ----------------
+def _drill_timer():
+    while True:
+        time.sleep(60)
+        try:
+            training_drill.process_all()
+        except Exception as e:  # the timer must never die
+            print(f"[drill timer] {e}")
+
+
+@app.on_event("startup")
+def start_drill_timer():
+    training.load_env()
+    threading.Thread(target=_drill_timer, daemon=True).start()
+
+
+@app.get("/training/{user_id}/current")
+def get_current_training_plan(user_id: str):
+    plan = training.get_current_plan(user_id.strip())
+    if plan is None:
+        raise HTTPException(status_code=404, detail="No training in progress. Start your training first.")
+    return plan
 
 
 @app.get("/")

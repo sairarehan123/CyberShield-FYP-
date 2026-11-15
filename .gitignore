@@ -9,3 +9,6 @@ node_modules/
 dist/
 results_tpb/
 results_ttat/
+results_training/
+results_training/
+*.old
