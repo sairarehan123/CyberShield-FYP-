@@ -1,0 +1,27 @@
+__pycache__/
+*.pyc
+.vscode/
+.env
+results/
+results_pmt/
+node_modules/
+.expo/
+dist/
+# Python virtual environment
+backend/venv/
+
+# macOS system files
+.DS_Store
+
+# Local environment files
+.env.*
+!.env.example
+.env
+.env.*
+!.env.example
+node_modules/
+.expo/
+.venv/
+__pycache__/
+results*/
+*.bak
