@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import {
-  Alert,
   Modal,
   Pressable,
   StyleSheet,
@@ -110,7 +109,7 @@ const MYTH_FACTS = [
   },
 ];
 
-export default function HomeScreen({ onSwitchTab }) {
+export default function HomeScreen({ navigation, onSwitchTab }) {
   const [mythIndex, setMythIndex] = useState(0);
   const [selectedGuess, setSelectedGuess] = useState(null);
   const [activePillar, setActivePillar] = useState(null);
@@ -131,23 +130,6 @@ export default function HomeScreen({ onSwitchTab }) {
             Welcome to {APP_NAME}
           </Text>
         </View>
-
-        <Pressable
-          onPress={() =>
-            Alert.alert(
-              'Notifications',
-              "You don't have any notifications yet."
-            )
-          }
-          style={styles.roundBtn}
-          accessibilityLabel="Notifications"
-        >
-          <Ionicons
-            name="notifications-outline"
-            size={21}
-            color={C.mauveDark}
-          />
-        </Pressable>
       </View>
 
       <Text style={styles.headline}>
@@ -469,18 +451,6 @@ const styles = StyleSheet.create({
     letterSpacing: -0.6,
     color: C.plum,
     marginBottom: spacing.xl,
-  },
-
-  roundBtn: {
-    width: 44,
-    height: 44,
-    borderRadius: radius.pill,
-    backgroundColor: C.pinkSoft,
-    borderWidth: 1,
-    borderColor: C.border,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginLeft: spacing.sm,
   },
 
   hero: {

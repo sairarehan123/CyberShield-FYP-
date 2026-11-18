@@ -1,0 +1,36 @@
+{
+  "assessment_id": "guest_1794471128648_4012_2026-11-14_17-46-26",
+  "user_id": "guest_1794471128648_4012",
+  "timestamp": "2026-11-14_17-46-26",
+  "answers": {
+    "ATT1": 1,
+    "ATT2": 2,
+    "ATT3": 2,
+    "ATT4": 1,
+    "SN1": 1,
+    "SN2": 1,
+    "SN3": 1,
+    "SN4": 1,
+    "SN5": 1,
+    "PBC1": 1,
+    "PBC2": 1,
+    "PBC3": 1,
+    "PBC4": 1,
+    "PBC5": 1
+  },
+  "profile": {
+    "construct_scores": {
+      "attitude": 1.5,
+      "subjective_norm": 2.2,
+      "perceived_behavioral_control": 2.2
+    },
+    "construct_levels": {
+      "attitude": "Low",
+      "subjective_norm": "Low",
+      "perceived_behavioral_control": "Low"
+    },
+    "overall_score": 1.97,
+    "overall_level": "Low",
+    "weakest_area": "attitude"
+  }
+}

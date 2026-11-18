@@ -1,0 +1,953 @@
+{
+  "user_id": "1e456508-312e-447d-a602-c8d50b3115d9",
+  "completed": [
+    "response_cost",
+    "perceived_severity"
+  ],
+  "current_area": "response_effectiveness",
+  "plans": {
+    "response_cost": {
+      "area": "response_cost",
+      "theory": "ttat",
+      "priority": 1,
+      "sebis_score": 2.57,
+      "sebis_level": "Low",
+      "steps": [
+        {
+          "step": "Enable automatic security updates on your device.",
+          "reason": "Removes manual effort, showing security can be low-cost and hassle-free."
+        },
+        {
+          "step": "Set a simple 4-digit PIN for app lock instead of complex passwords.",
+          "reason": "Provides protection with minimal time and mental load."
+        },
+        {
+          "step": "Install a trusted one-click antivirus app and let it run in background.",
+          "reason": "Adds protection without daily interaction, reducing perceived effort."
+        },
+        {
+          "step": "Create a shortcut to enable Wi-Fi security (VPN) with one tap.",
+          "reason": "Demonstrates that strong security can be activated quickly."
+        }
+      ],
+      "source": "ai",
+      "model": "openai/gpt-oss-120b",
+      "generated_at": "2026-11-17_23-24-25"
+    },
+    "perceived_severity": {
+      "area": "perceived_severity",
+      "theory": "ttat",
+      "priority": 2,
+      "sebis_score": 4.0,
+      "sebis_level": "Medium",
+      "steps": [
+        {
+          "step": "Read a recent news story about a personal data breach affecting everyday users.",
+          "reason": "Shows real severe impact on people like you."
+        },
+        {
+          "step": "List three personal assets (bank, photos, health data) that could be lost in a breach.",
+          "reason": "Highlights personal consequences, increasing perceived severity."
+        },
+        {
+          "step": "Estimate financial loss if identity stolen (e.g., credit repair, fraud).",
+          "reason": "Quantifies damage, making severity tangible."
+        },
+        {
+          "step": "Watch a 5\u2011minute video on ransomware impact on small businesses.",
+          "reason": "Visualizes severe outcomes, reinforcing seriousness."
+        }
+      ],
+      "source": "ai",
+      "model": "openai/gpt-oss-120b",
+      "generated_at": "2026-11-17_23-30-43"
+    },
+    "response_effectiveness": {
+      "area": "response_effectiveness",
+      "theory": "ttat",
+      "priority": 3,
+      "sebis_score": 4.0,
+      "sebis_level": "Medium",
+      "steps": [
+        {
+          "step": "Enable built\u2011in firewall and verify it blocks incoming connections.",
+          "reason": "Seeing it work builds belief that safeguards actually stop attacks."
+        },
+        {
+          "step": "Run a reputable anti\u2011malware scan on your device.",
+          "reason": "Detecting threats confirms protection tools are effective."
+        },
+        {
+          "step": "Set up two\u2011factor authentication on one account and test login.",
+          "reason": "Experiencing extra security proves the safeguard prevents unauthorized access."
+        },
+        {
+          "step": "Review a recent security breach report and note how similar safeguards stopped it.",
+          "reason": "Real\u2011world examples reinforce confidence in protective measures."
+        }
+      ],
+      "source": "ai",
+      "model": "openai/gpt-oss-120b",
+      "generated_at": "2026-11-18_00-08-34"
+    }
+  },
+  "checks": {
+    "response_cost": {
+      "fails": 0,
+      "attempts": [
+        {
+          "attempt": 1,
+          "quiz_score": 1.0,
+          "passed": true,
+          "at": "2026-11-17_23-26-02"
+        }
+      ],
+      "current": null,
+      "quiz_passed": true,
+      "evaluation": null,
+      "eval_attempts": 1,
+      "evaluations": [
+        {
+          "attempt": 1,
+          "report_rate": 1.0,
+          "click_rate": 0.0,
+          "false_alarms": 1,
+          "passed": true,
+          "at": "2026-11-17T18:30:37.597763+00:00",
+          "proficiency": 91.2,
+          "level": "High",
+          "decision": "mastered"
+        }
+      ]
+    },
+    "perceived_severity": {
+      "fails": 1,
+      "attempts": [
+        {
+          "attempt": 1,
+          "quiz_score": 0.4,
+          "passed": false,
+          "at": "2026-11-18_00-04-02"
+        },
+        {
+          "attempt": 2,
+          "quiz_score": 1.0,
+          "passed": true,
+          "at": "2026-11-18_00-05-36"
+        }
+      ],
+      "current": null,
+      "quiz_passed": true,
+      "evaluation": null,
+      "eval_attempts": 1,
+      "evaluations": [
+        {
+          "attempt": 1,
+          "report_rate": 1.0,
+          "click_rate": 0.0,
+          "false_alarms": 0,
+          "passed": true,
+          "at": "2026-11-17T19:08:28.600371+00:00",
+          "proficiency": 100.0,
+          "level": "High",
+          "decision": "mastered"
+        }
+      ]
+    }
+  },
+  "history": [
+    {
+      "area": "response_cost",
+      "quiz_attempts": 1,
+      "evaluation_rounds": 1,
+      "first_quiz_score": 1.0,
+      "final_quiz_score": 1.0,
+      "first_report_rate": 1.0,
+      "final_report_rate": 1.0,
+      "first_click_rate": 0.0,
+      "final_click_rate": 0.0,
+      "first_proficiency": 91.2,
+      "final_proficiency": 91.2,
+      "final_level": "High",
+      "passed_at": "2026-11-17T18:30:37.597763+00:00"
+    },
+    {
+      "area": "perceived_severity",
+      "quiz_attempts": 2,
+      "evaluation_rounds": 1,
+      "first_quiz_score": 0.4,
+      "final_quiz_score": 1.0,
+      "first_report_rate": 1.0,
+      "final_report_rate": 1.0,
+      "first_click_rate": 0.0,
+      "final_click_rate": 0.0,
+      "first_proficiency": 100.0,
+      "final_proficiency": 100.0,
+      "final_level": "High",
+      "passed_at": "2026-11-17T19:08:28.600371+00:00"
+    }
+  ],
+  "chat": {
+    "response_cost": [
+      {
+        "role": "user",
+        "kind": "theory_choice",
+        "text": "I choose Technology Threat Avoidance Theory.",
+        "at": "2026-11-17_23-24-19",
+        "data": {
+          "theory": "ttat"
+        }
+      },
+      {
+        "role": "assistant",
+        "kind": "plan",
+        "text": "Hi! Your weakest area in Technology Threat Avoidance Theory is response cost (level: Low). Here is your personalized training. Do these steps in real life - and ask me anything about them.",
+        "at": "2026-11-17_23-24-25",
+        "data": {
+          "area": "response_cost",
+          "steps": [
+            {
+              "step": "Enable automatic security updates on your device.",
+              "reason": "Removes manual effort, showing security can be low-cost and hassle-free."
+            },
+            {
+              "step": "Set a simple 4-digit PIN for app lock instead of complex passwords.",
+              "reason": "Provides protection with minimal time and mental load."
+            },
+            {
+              "step": "Install a trusted one-click antivirus app and let it run in background.",
+              "reason": "Adds protection without daily interaction, reducing perceived effort."
+            },
+            {
+              "step": "Create a shortcut to enable Wi-Fi security (VPN) with one tap.",
+              "reason": "Demonstrates that strong security can be activated quickly."
+            }
+          ],
+          "sebis_level": "Low"
+        }
+      },
+      {
+        "role": "assistant",
+        "kind": "quiz",
+        "text": "Quiz time! Answer all 5 questions. You need 4 right to pass.",
+        "at": "2026-11-17_23-24-34",
+        "data": {
+          "area": "response_cost",
+          "attempt": 1,
+          "pass_mark": 0.7,
+          "quiz": [
+            {
+              "id": "q1",
+              "question": "Why should you enable automatic security updates on your device?",
+              "options": [
+                {
+                  "id": "a",
+                  "text": "They make the phone faster"
+                },
+                {
+                  "id": "b",
+                  "text": "They change your wallpaper"
+                },
+                {
+                  "id": "c",
+                  "text": "They delete your apps"
+                },
+                {
+                  "id": "d",
+                  "text": "They fix known security holes"
+                }
+              ]
+            },
+            {
+              "id": "q2",
+              "question": "What type of lock does the training recommend for apps?",
+              "options": [
+                {
+                  "id": "a",
+                  "text": "A 4-digit simple PIN"
+                },
+                {
+                  "id": "b",
+                  "text": "A long complex password"
+                },
+                {
+                  "id": "c",
+                  "text": "Your birthdate"
+                },
+                {
+                  "id": "d",
+                  "text": "No PIN at all"
+                }
+              ]
+            },
+            {
+              "id": "q3",
+              "question": "When choosing an antivirus app, what is the key characteristic to look for?",
+              "options": [
+                {
+                  "id": "a",
+                  "text": "It costs a lot"
+                },
+                {
+                  "id": "b",
+                  "text": "It is from a trusted source and runs in the background"
+                },
+                {
+                  "id": "c",
+                  "text": "It has many ads"
+                },
+                {
+                  "id": "d",
+                  "text": "It only scans once"
+                }
+              ]
+            },
+            {
+              "id": "q4",
+              "question": "How can you quickly secure your Wi\u2011Fi connection on public networks?",
+              "options": [
+                {
+                  "id": "a",
+                  "text": "Use the same password everywhere"
+                },
+                {
+                  "id": "b",
+                  "text": "Enable the one\u2011tap VPN shortcut"
+                },
+                {
+                  "id": "c",
+                  "text": "Ignore the network"
+                },
+                {
+                  "id": "d",
+                  "text": "Turn off Wi\u2011Fi"
+                }
+              ]
+            },
+            {
+              "id": "q5",
+              "question": "Which sign often indicates a phishing message?",
+              "options": [
+                {
+                  "id": "a",
+                  "text": "Spelling mistakes and urgent request for personal info"
+                },
+                {
+                  "id": "b",
+                  "text": "A battery\u2011low notification"
+                },
+                {
+                  "id": "c",
+                  "text": "A message about the weather"
+                },
+                {
+                  "id": "d",
+                  "text": "A friendly greeting from a known friend"
+                }
+              ]
+            }
+          ],
+          "message": "Pass the quiz to continue with your training."
+        }
+      },
+      {
+        "role": "assistant",
+        "kind": "quiz_result",
+        "text": "You scored 5/5 - you passed! Great job - you got every question right!\n\nQuiz passed! Keep following your steps in daily life. We will check how you are doing over the next days.",
+        "at": "2026-11-17_23-26-02",
+        "data": {
+          "passed": true,
+          "score": "5/5",
+          "new_plan_next": false
+        }
+      },
+      {
+        "role": "assistant",
+        "kind": "consent_request",
+        "text": "One more thing before we continue. As part of your training, CyberShield will test your everyday security habits with simulated security messages (for example fake emails or notifications). They are harmless and you will always be told what they were afterwards. Do you agree?",
+        "at": "2026-11-17_23-26-02"
+      },
+      {
+        "role": "user",
+        "kind": "consent",
+        "text": "I agree.",
+        "at": "2026-11-17_23-26-11"
+      },
+      {
+        "role": "assistant",
+        "kind": "text",
+        "text": "Thank you! Keep following your steps every day. I'm here if you have questions.",
+        "at": "2026-11-17_23-26-11"
+      },
+      {
+        "role": "assistant",
+        "kind": "evaluation_result",
+        "text": "Area mastered! Great job avoiding phishing links and reporting every suspicious message. Your overall proficiency is high, showing strong improvement. Keep maintaining careful judgment to reduce occasional false reports. Your next training area is ready: perceived severity.",
+        "at": "2026-11-17_23-30-38",
+        "data": {
+          "decision": "mastered",
+          "proficiency": 91.2,
+          "level": "High",
+          "evidence": [
+            "You clicked 0 phishing links",
+            "You reported all 3 phishing messages",
+            "You had 1 false report"
+          ],
+          "next_area": "perceived_severity",
+          "new_plan_next": false
+        }
+      }
+    ],
+    "perceived_severity": [
+      {
+        "role": "assistant",
+        "kind": "plan",
+        "text": "Hi! Your weakest area in Technology Threat Avoidance Theory is perceived severity (level: Medium). Here is your personalized training. Do these steps in real life - and ask me anything about them.",
+        "at": "2026-11-17_23-30-43",
+        "data": {
+          "area": "perceived_severity",
+          "steps": [
+            {
+              "step": "Read a recent news story about a personal data breach affecting everyday users.",
+              "reason": "Shows real severe impact on people like you."
+            },
+            {
+              "step": "List three personal assets (bank, photos, health data) that could be lost in a breach.",
+              "reason": "Highlights personal consequences, increasing perceived severity."
+            },
+            {
+              "step": "Estimate financial loss if identity stolen (e.g., credit repair, fraud).",
+              "reason": "Quantifies damage, making severity tangible."
+            },
+            {
+              "step": "Watch a 5\u2011minute video on ransomware impact on small businesses.",
+              "reason": "Visualizes severe outcomes, reinforcing seriousness."
+            }
+          ],
+          "sebis_level": "Medium"
+        }
+      },
+      {
+        "role": "assistant",
+        "kind": "quiz",
+        "text": "Quiz time! Answer all 5 questions. You need 4 right to pass.",
+        "at": "2026-11-17_23-44-17",
+        "data": {
+          "area": "perceived_severity",
+          "attempt": 1,
+          "pass_mark": 0.7,
+          "quiz": [
+            {
+              "id": "q1",
+              "question": "Which sign most likely shows an email is a phishing attempt?",
+              "options": [
+                {
+                  "id": "a",
+                  "text": "It has no links"
+                },
+                {
+                  "id": "b",
+                  "text": "It comes from a known friend"
+                },
+                {
+                  "id": "c",
+                  "text": "It uses your exact name"
+                },
+                {
+                  "id": "d",
+                  "text": "It asks for personal info"
+                }
+              ]
+            },
+            {
+              "id": "q2",
+              "question": "After reading a news story about a data breach, what should you do first to protect your assets?",
+              "options": [
+                {
+                  "id": "a",
+                  "text": "Change all your passwords"
+                },
+                {
+                  "id": "b",
+                  "text": "Delete the article"
+                },
+                {
+                  "id": "c",
+                  "text": "Share the article on social media"
+                },
+                {
+                  "id": "d",
+                  "text": "Ignore the story"
+                }
+              ]
+            },
+            {
+              "id": "q3",
+              "question": "Which personal asset is most likely targeted by ransomware?",
+              "options": [
+                {
+                  "id": "a",
+                  "text": "Bank account numbers"
+                },
+                {
+                  "id": "b",
+                  "text": "All of the above"
+                },
+                {
+                  "id": "c",
+                  "text": "Health data"
+                },
+                {
+                  "id": "d",
+                  "text": "Photos"
+                }
+              ]
+            },
+            {
+              "id": "q4",
+              "question": "When estimating financial loss from identity theft, which cost is usually NOT included?",
+              "options": [
+                {
+                  "id": "a",
+                  "text": "Credit\u2011repair fees"
+                },
+                {
+                  "id": "b",
+                  "text": "Fraudulent charges"
+                },
+                {
+                  "id": "c",
+                  "text": "Lost wages from a job"
+                },
+                {
+                  "id": "d",
+                  "text": "Legal fees"
+                }
+              ]
+            },
+            {
+              "id": "q5",
+              "question": "What common consequence did the ransomware video show for small businesses?",
+              "options": [
+                {
+                  "id": "a",
+                  "text": "Data loss and downtime"
+                },
+                {
+                  "id": "b",
+                  "text": "Hiring more staff"
+                },
+                {
+                  "id": "c",
+                  "text": "Increased profits"
+                },
+                {
+                  "id": "d",
+                  "text": "Getting free software"
+                }
+              ]
+            }
+          ],
+          "message": "Pass the quiz to continue with your training."
+        }
+      },
+      {
+        "role": "assistant",
+        "kind": "quiz_result",
+        "text": "You scored 2/5. You missed the big picture: phishing emails usually ask for personal information, ransomware doesn\u2019t just go after one thing\u2014it can lock any of your data (bank info, photos, health records), and when it hits a small business it often means lost data and long downtime.  \n\n**Easy tip:** If an email ever asks you to share passwords, account numbers or other personal details, stop, don\u2019t reply, and verify the request through a trusted channel.\n\nYou did not pass the quiz yet. Read the answers below. Try again with new questions.",
+        "at": "2026-11-18_00-04-03",
+        "data": {
+          "passed": false,
+          "score": "2/5",
+          "new_plan_next": false
+        }
+      },
+      {
+        "role": "assistant",
+        "kind": "quiz",
+        "text": "Quiz time! Answer all 5 questions. You need 4 right to pass.",
+        "at": "2026-11-18_00-04-15",
+        "data": {
+          "area": "perceived_severity",
+          "attempt": 2,
+          "pass_mark": 0.7,
+          "quiz": [
+            {
+              "id": "q1",
+              "question": "After reading a news story about a data breach, which sign suggests your personal info might be at risk?",
+              "options": [
+                {
+                  "id": "a",
+                  "text": "The screen flickers"
+                },
+                {
+                  "id": "b",
+                  "text": "Your phone battery drains fast"
+                },
+                {
+                  "id": "c",
+                  "text": "A strange email asking for your login"
+                },
+                {
+                  "id": "d",
+                  "text": "You get a new app update"
+                }
+              ]
+            },
+            {
+              "id": "q2",
+              "question": "Which of these is NOT a personal asset that could be lost in a breach?",
+              "options": [
+                {
+                  "id": "a",
+                  "text": "Family photos"
+                },
+                {
+                  "id": "b",
+                  "text": "Health records"
+                },
+                {
+                  "id": "c",
+                  "text": "Favorite music playlist"
+                },
+                {
+                  "id": "d",
+                  "text": "Bank account details"
+                }
+              ]
+            },
+            {
+              "id": "q3",
+              "question": "If your identity is stolen, which cost is most likely to appear on your credit report?",
+              "options": [
+                {
+                  "id": "a",
+                  "text": "A slower internet speed"
+                },
+                {
+                  "id": "b",
+                  "text": "A broken screen"
+                },
+                {
+                  "id": "c",
+                  "text": "A new credit card charge"
+                },
+                {
+                  "id": "d",
+                  "text": "A missing app icon"
+                }
+              ]
+            },
+            {
+              "id": "q4",
+              "question": "In the ransomware video, what do attackers usually demand?",
+              "options": [
+                {
+                  "id": "a",
+                  "text": "A request to install a game"
+                },
+                {
+                  "id": "b",
+                  "text": "A request to change your password"
+                },
+                {
+                  "id": "c",
+                  "text": "Payment in cryptocurrency to unlock files"
+                },
+                {
+                  "id": "d",
+                  "text": "A donation to charity"
+                }
+              ]
+            },
+            {
+              "id": "q5",
+              "question": "What should you do first if you suspect a phishing message?",
+              "options": [
+                {
+                  "id": "a",
+                  "text": "Click the link to see where it goes"
+                },
+                {
+                  "id": "b",
+                  "text": "Reply asking for more info"
+                },
+                {
+                  "id": "c",
+                  "text": "Delete the message and report it"
+                },
+                {
+                  "id": "d",
+                  "text": "Forward it to friends"
+                }
+              ]
+            }
+          ],
+          "message": "Pass the quiz to continue with your training."
+        }
+      },
+      {
+        "role": "assistant",
+        "kind": "quiz_result",
+        "text": "You scored 5/5 - you passed! Great job - you got every question right!\n\nQuiz passed! Keep following your steps in daily life. We will check how you are doing over the next days.",
+        "at": "2026-11-18_00-05-40",
+        "data": {
+          "passed": true,
+          "score": "5/5",
+          "new_plan_next": false
+        }
+      },
+      {
+        "role": "assistant",
+        "kind": "evaluation_result",
+        "text": "Area mastered! Great job! You didn\u2019t click any phishing links and reported every suspicious message. Keep up the excellent vigilance. Your next training area is ready: response effectiveness.",
+        "at": "2026-11-18_00-08-29",
+        "data": {
+          "decision": "mastered",
+          "proficiency": 100.0,
+          "level": "High",
+          "evidence": [
+            "You clicked 0 phishing links",
+            "You reported all 3 phishing messages"
+          ],
+          "next_area": "response_effectiveness",
+          "new_plan_next": false
+        }
+      }
+    ],
+    "response_effectiveness": [
+      {
+        "role": "assistant",
+        "kind": "plan",
+        "text": "Hi! Your weakest area in Technology Threat Avoidance Theory is response effectiveness (level: Medium). Here is your personalized training. Do these steps in real life - and ask me anything about them.",
+        "at": "2026-11-18_00-08-34",
+        "data": {
+          "area": "response_effectiveness",
+          "steps": [
+            {
+              "step": "Enable built\u2011in firewall and verify it blocks incoming connections.",
+              "reason": "Seeing it work builds belief that safeguards actually stop attacks."
+            },
+            {
+              "step": "Run a reputable anti\u2011malware scan on your device.",
+              "reason": "Detecting threats confirms protection tools are effective."
+            },
+            {
+              "step": "Set up two\u2011factor authentication on one account and test login.",
+              "reason": "Experiencing extra security proves the safeguard prevents unauthorized access."
+            },
+            {
+              "step": "Review a recent security breach report and note how similar safeguards stopped it.",
+              "reason": "Real\u2011world examples reinforce confidence in protective measures."
+            }
+          ],
+          "sebis_level": "Medium"
+        }
+      }
+    ]
+  },
+  "contact": {
+    "email": "amnazahood02@gmail.com"
+  },
+  "focus_theory": "ttat",
+  "chat_plan_marks": {
+    "response_cost": "ttat:2026-11-17_23-24-25",
+    "perceived_severity": "ttat:2026-11-17_23-30-43",
+    "response_effectiveness": "ttat:2026-11-18_00-08-34"
+  },
+  "consent": true,
+  "notifications": [
+    {
+      "id": "msg-response_cost-1-m1",
+      "kind": "message",
+      "title": "New message from BankSecure",
+      "body": "Your account has been locked due to suspicious activity. Verify now to avoid permanent clo",
+      "at": "2026-11-17T18:26:14.193590+00:00",
+      "read": true,
+      "message_id": "m1",
+      "channel": "SMS"
+    },
+    {
+      "id": "msg-response_cost-1-m2",
+      "kind": "message",
+      "title": "New email from FinanceDept",
+      "body": "Monthly Statement Available",
+      "at": "2026-11-17T18:26:52.496118+00:00",
+      "read": true,
+      "message_id": "m2",
+      "channel": "Email"
+    },
+    {
+      "id": "msg-response_cost-1-m3",
+      "kind": "message",
+      "title": "New message from ParcelExpress",
+      "body": "Delivery attempt failed. Provide your address verification to resend package.",
+      "at": "2026-11-17T18:27:36.154024+00:00",
+      "read": true,
+      "message_id": "m3",
+      "channel": "App notification"
+    },
+    {
+      "id": "msg-response_cost-1-m4",
+      "kind": "message",
+      "title": "New email from LuckyWinners",
+      "body": "Congratulations! You've won a $500 gift card",
+      "at": "2026-11-17T18:28:14.193590+00:00",
+      "read": true,
+      "message_id": "m4",
+      "channel": "Email"
+    },
+    {
+      "id": "result-response_cost-1",
+      "kind": "result",
+      "title": "Your progress check is complete",
+      "body": "Open the chat to see how you did.",
+      "at": "2026-11-17T18:30:37.597763+00:00",
+      "read": true
+    },
+    {
+      "id": "msg-perceived_severity-1-m1",
+      "kind": "message",
+      "title": "New email from security-alert@banksecure.example",
+      "body": "Immediate Action Required: Account Suspension",
+      "at": "2026-11-17T19:05:40.138528+00:00",
+      "read": true,
+      "message_id": "m1",
+      "channel": "Email"
+    },
+    {
+      "id": "msg-perceived_severity-1-m2",
+      "kind": "message",
+      "title": "New message from TaxOffice",
+      "body": "Your tax filing is incomplete. Submit the required documents immediately to avoid penaltie",
+      "at": "2026-11-17T19:06:17.982429+00:00",
+      "read": true,
+      "message_id": "m2",
+      "channel": "App notification"
+    },
+    {
+      "id": "msg-perceived_severity-1-m3",
+      "kind": "message",
+      "title": "New message from LuckyWin123",
+      "body": "Congratulations! You have been selected for a $500 gift card. Claim your prize now before ",
+      "at": "2026-11-17T19:07:00.310395+00:00",
+      "read": true,
+      "message_id": "m3",
+      "channel": "SMS"
+    },
+    {
+      "id": "msg-perceived_severity-1-m4",
+      "kind": "message",
+      "title": "New email from orders@shopnow.example",
+      "body": "Your order #12345 has shipped",
+      "at": "2026-11-17T19:07:40.138528+00:00",
+      "read": true,
+      "message_id": "m4",
+      "channel": "Email"
+    },
+    {
+      "id": "result-perceived_severity-1",
+      "kind": "result",
+      "title": "Your progress check is complete",
+      "body": "Open the chat to see how you did.",
+      "at": "2026-11-17T19:08:28.600371+00:00",
+      "read": false
+    }
+  ],
+  "last_drill_result": {
+    "state": "resolved",
+    "area": "perceived_severity",
+    "attempt": 1,
+    "phishing_total": 3,
+    "genuine_total": 1,
+    "fell_victim": 0,
+    "reported": 3,
+    "ignored": 0,
+    "false_alarms": 0,
+    "report_rate": 1.0,
+    "click_rate": 0.0,
+    "passed": true,
+    "rule_passed": true,
+    "messages": [
+      {
+        "id": "m1",
+        "token": "MWU0NTY1MDgtMzEyZS00NDdkLWE2MDItYzhkNTBiMzExNWQ5.KfiydehA2Y46ww",
+        "was_phishing": true,
+        "outcome": "reported",
+        "sender": "security-alert@banksecure.example",
+        "link_text": "http://verify-account.security.example/login",
+        "message_text": "Dear Customer, we detected suspicious activity on your account and will suspend it within 24 hours unless you verify your identity.",
+        "red_flags": [
+          "Sender email does not match official domain",
+          "Urgent language demanding immediate action",
+          "Link uses unknown domain"
+        ],
+        "explanation": "Scam tries to steal credentials by creating panic and using a fake verification link."
+      },
+      {
+        "id": "m2",
+        "token": "MWU0NTY1MDgtMzEyZS00NDdkLWE2MDItYzhkNTBiMzExNWQ5.vcjimZtl8VQizA",
+        "was_phishing": true,
+        "outcome": "reported",
+        "sender": "TaxOffice",
+        "link_text": "http://tax-submit.gov.example/upload",
+        "message_text": "Your tax filing is incomplete. Submit the required documents immediately to avoid penalties.",
+        "red_flags": [
+          "Impersonates a government agency",
+          "Urgent request for sensitive documents",
+          "Domain does not belong to official tax authority"
+        ],
+        "explanation": "Scam pretends to be a tax authority to obtain personal documents."
+      },
+      {
+        "id": "m3",
+        "token": "MWU0NTY1MDgtMzEyZS00NDdkLWE2MDItYzhkNTBiMzExNWQ5.2BNptXJ_mqy84w",
+        "was_phishing": true,
+        "outcome": "reported",
+        "sender": "LuckyWin123",
+        "link_text": "http://claim-prize.reward.example/claim",
+        "message_text": "Congratulations! You have been selected for a $500 gift card. Claim your prize now before it expires.",
+        "red_flags": [
+          "Unexpected prize notification",
+          "Link uses unfamiliar domain",
+          "Requests personal information to claim"
+        ],
+        "explanation": "Scam lures victims with a fake reward and a malicious link."
+      },
+      {
+        "id": "m4",
+        "token": "MWU0NTY1MDgtMzEyZS00NDdkLWE2MDItYzhkNTBiMzExNWQ5.r2wwOwdbMVQ6Rg",
+        "was_phishing": false,
+        "outcome": "opened_genuine",
+        "sender": "orders@shopnow.example",
+        "link_text": "http://track-order.shopnow.example/12345",
+        "message_text": "Your order has been shipped. You can track your package using the link below.",
+        "red_flags": [],
+        "explanation": "Legitimate shipping notification from the retailer."
+      }
+    ],
+    "resolved_at": "2026-11-17T19:08:28.600371+00:00",
+    "new_plan_next": false,
+    "next_area": "response_effectiveness",
+    "all_done": false,
+    "evaluation": {
+      "decision": "mastered",
+      "proficiency": 100.0,
+      "level": "High",
+      "quiz_score": 100.0,
+      "simulation_score": 100.0,
+      "previous_proficiency": null,
+      "change": null,
+      "improved": true,
+      "evidence": [
+        "You clicked 0 phishing links",
+        "You reported all 3 phishing messages"
+      ],
+      "coaching_focus": "",
+      "feedback": "Great job! You didn\u2019t click any phishing links and reported every suspicious message. Keep up the excellent vigilance.",
+      "ai_used": true
+    },
+    "decision": "mastered",
+    "message": "Area mastered! Great job! You didn\u2019t click any phishing links and reported every suspicious message. Keep up the excellent vigilance. Your next training area is ready: response effectiveness."
+  }
+}

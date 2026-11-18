@@ -25,3 +25,14 @@ export function dayLabel(at) {
   if (same(d, y)) return 'Yesterday';
   return `${d.getDate()} ${MONTHS[d.getMonth()]}`;
 }
+
+/** "just now", "5 min ago", "3 h ago", "2 d ago" from an ISO time (the notifications use ISO). */
+export function agoLabel(iso) {
+  const t = Date.parse(iso || '');
+  if (Number.isNaN(t)) return '';
+  const s = Math.max(0, Math.round((Date.now() - t) / 1000));
+  if (s < 45) return 'just now';
+  if (s < 3600) return `${Math.max(1, Math.round(s / 60))} min ago`;
+  if (s < 86400) return `${Math.round(s / 3600)} h ago`;
+  return `${Math.round(s / 86400)} d ago`;
+}

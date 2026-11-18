@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import {
-  Alert,
   Modal,
   Pressable,
   ScrollView,
@@ -92,12 +91,6 @@ const SECURITY_GUIDELINES = [
   },
 ];
 
-const SAMPLE_HISTORY = [
-  { id: '1', date: '12 Oct 2026', score: 86 },
-  { id: '2', date: '28 Sep 2026', score: 71 },
-  { id: '3', date: '10 Sep 2026', score: 62 },
-];
-
 const getInitials = (name) =>
   (name || 'User')
     .split(' ')
@@ -127,8 +120,6 @@ export default function ProfileScreen({ navigation, route }) {
     }
     loadSession();
   }, []);
-
-  const comingSoon = (title) => () => Alert.alert(title, 'This feature is coming soon.');
 
   const startEdit = () => {
     setDraftName(name);
@@ -187,7 +178,7 @@ export default function ProfileScreen({ navigation, route }) {
             </Pressable>
           </View>
           <Text style={styles.title}>Profile</Text>
-          <Text style={styles.subtitle}>Your account, guidelines, and security progress.</Text>
+          <Text style={styles.subtitle}>Your account and security guidelines.</Text>
 
           {/* Profile Card */}
           <View style={styles.profileCard}>
@@ -233,7 +224,7 @@ export default function ProfileScreen({ navigation, route }) {
             )}
           </View>
 
-          {/* Security Guidelines (Standalone — no chatbot navigation) */}
+          {/* Security Guidelines */}
           <Section title="Security guidelines">
             {SECURITY_GUIDELINES.map((item, index) => (
               <Row
@@ -245,31 +236,6 @@ export default function ProfileScreen({ navigation, route }) {
                 last={index === SECURITY_GUIDELINES.length - 1}
               />
             ))}
-          </Section>
-
-          {/* Assessment History */}
-          <Section title="Assessment history" actionLabel="View all" onAction={comingSoon('Assessment history')}>
-            {SAMPLE_HISTORY.length === 0 ? (
-              <View style={styles.empty}>
-                <Text style={styles.emptyText}>No assessments yet. Take your first assessment to see it here.</Text>
-              </View>
-            ) : (
-              SAMPLE_HISTORY.map((item, index) => (
-                <Row
-                  key={item.id}
-                  icon="shield-checkmark-outline"
-                  title="Security assessment"
-                  subtitle={item.date}
-                  onPress={comingSoon('Assessment details')}
-                  last={index === SAMPLE_HISTORY.length - 1}
-                  right={
-                    <View style={styles.scorePill}>
-                      <Text style={styles.scoreText}>{item.score}</Text>
-                    </View>
-                  }
-                />
-              ))
-            )}
           </Section>
         </ScrollView>
 
@@ -391,18 +357,6 @@ const styles = StyleSheet.create({
   email: { ...typography.body, color: colors.textSecondary, marginTop: spacing.xs },
   editButton: { alignSelf: 'stretch', marginTop: spacing.lg },
   editBox: { alignSelf: 'stretch', marginTop: spacing.sm },
-
-  scorePill: {
-    minWidth: 44,
-    paddingHorizontal: spacing.md,
-    paddingVertical: spacing.xs + 2,
-    borderRadius: radius.pill,
-    backgroundColor: colors.lilac,
-    alignItems: 'center',
-  },
-  scoreText: { ...typography.label, color: colors.primary },
-  empty: { padding: spacing.lg },
-  emptyText: { ...typography.caption, color: colors.textSecondary },
 
   modalBackdrop: {
     flex: 1,

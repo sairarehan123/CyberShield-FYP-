@@ -1,0 +1,42 @@
+{
+  "user_id": "e59abb14-b5ce-4487-94d6-20ae6f8e1677",
+  "completed": [],
+  "current_area": null,
+  "plans": {},
+  "checks": {},
+  "history": [],
+  "chat": {
+    "_general": [
+      {
+        "role": "assistant",
+        "kind": "text",
+        "text": "Hi! I'm your CyberShield coach. Ask me anything about staying safe online or about how this app works. Take your assessment to unlock your personal training.",
+        "at": "2026-11-18_11-21-29"
+      },
+      {
+        "role": "user",
+        "kind": "text",
+        "text": "Hello",
+        "at": "2026-11-18_11-21-42"
+      },
+      {
+        "role": "assistant",
+        "kind": "text",
+        "text": "I can only help with cybersecurity topics and the CyberShield app. How can I assist you?",
+        "at": "2026-11-18_11-21-42",
+        "data": {
+          "on_topic": false,
+          "follow_up": "Would you like to know how to start the assessment?",
+          "suggestions": [
+            "How does the assessment work?",
+            "What is a strong password?",
+            "How to avoid phishing scams?"
+          ]
+        }
+      }
+    ]
+  },
+  "contact": {
+    "email": "s7658052@gmail.com"
+  }
+}

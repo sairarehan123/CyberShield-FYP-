@@ -1,0 +1,928 @@
+{
+  "user_id": "9ea401d9-2ef4-48fe-8aef-ef8978ff28d7",
+  "completed": [
+    "perceived_threat"
+  ],
+  "current_area": "self_efficacy",
+  "plans": {
+    "perceived_threat": {
+      "area": "perceived_threat",
+      "theory": "ttat",
+      "priority": 1,
+      "sebis_score": 3.86,
+      "sebis_level": "Medium",
+      "steps": [
+        {
+          "step": "Read a short news story about a recent phone scam.",
+          "reason": "Shows real danger, making threat feel more real."
+        },
+        {
+          "step": "Watch a 2-minute video on how hackers steal personal data.",
+          "reason": "Visual example helps you see the risk clearly."
+        },
+        {
+          "step": "List three ways your own accounts could be attacked.",
+          "reason": "Personalizing risk makes threat feel closer to you."
+        },
+        {
+          "step": "Set a reminder to change passwords every 3 months.",
+          "reason": "Acts on threat, turning worry into protective action."
+        }
+      ],
+      "source": "ai",
+      "model": "openai/gpt-oss-120b",
+      "generated_at": "2026-11-18_12-02-25"
+    },
+    "self_efficacy": {
+      "area": "self_efficacy",
+      "theory": "ttat",
+      "priority": 2,
+      "sebis_score": 4.2,
+      "sebis_level": "Medium",
+      "steps": [
+        {
+          "step": "Write down one easy password rule and use it for a new account today.",
+          "reason": "Simple rule builds confidence in creating passwords."
+        },
+        {
+          "step": "Use a password manager\u2019s built\u2011in password generator for one site.",
+          "reason": "Seeing a tool work reduces fear of making strong passwords."
+        },
+        {
+          "step": "Check a password\u2019s strength with an online checker for a password you already have.",
+          "reason": "Immediate feedback shows you can assess security yourself."
+        },
+        {
+          "step": "Set a reminder to update one password tomorrow.",
+          "reason": "Small, doable task reinforces belief you can manage security."
+        }
+      ],
+      "source": "ai",
+      "model": "openai/gpt-oss-120b",
+      "generated_at": "2026-11-18_12-19-17"
+    }
+  },
+  "checks": {
+    "self_efficacy": {
+      "fails": 1,
+      "attempts": [
+        {
+          "attempt": 1,
+          "quiz_score": 0.0,
+          "passed": false,
+          "at": "2026-11-18_11-58-21"
+        }
+      ],
+      "current": null
+    },
+    "subjective_norm": {
+      "fails": 0,
+      "attempts": [],
+      "current": null
+    },
+    "perceived_threat": {
+      "fails": 1,
+      "attempts": [
+        {
+          "attempt": 1,
+          "quiz_score": 0.4,
+          "passed": false,
+          "at": "2026-11-18_12-10-12"
+        },
+        {
+          "attempt": 2,
+          "quiz_score": 0.8,
+          "passed": true,
+          "at": "2026-11-18_12-13-31"
+        }
+      ],
+      "current": null,
+      "quiz_passed": true,
+      "evaluation": null,
+      "eval_attempts": 1,
+      "evaluations": [
+        {
+          "attempt": 1,
+          "report_rate": 1.0,
+          "click_rate": 0.0,
+          "false_alarms": 0,
+          "passed": true,
+          "at": "2026-11-18T07:19:06.564339+00:00",
+          "proficiency": 94.0,
+          "level": "High",
+          "decision": "mastered"
+        }
+      ]
+    }
+  },
+  "history": [
+    {
+      "area": "perceived_threat",
+      "quiz_attempts": 2,
+      "evaluation_rounds": 1,
+      "first_quiz_score": 0.4,
+      "final_quiz_score": 0.8,
+      "first_report_rate": 1.0,
+      "final_report_rate": 1.0,
+      "first_click_rate": 0.0,
+      "final_click_rate": 0.0,
+      "first_proficiency": 94.0,
+      "final_proficiency": 94.0,
+      "final_level": "High",
+      "passed_at": "2026-11-18T07:19:06.564339+00:00"
+    }
+  ],
+  "chat": {
+    "_general": [
+      {
+        "role": "assistant",
+        "kind": "text",
+        "text": "Hi! I'm your CyberShield coach. Ask me anything about staying safe online or about how this app works. Take your assessment to unlock your personal training.",
+        "at": "2026-11-18_11-46-17"
+      }
+    ],
+    "self_efficacy": [
+      {
+        "role": "user",
+        "kind": "theory_choice",
+        "text": "I choose Protection Motivation Theory.",
+        "at": "2026-11-18_11-52-23",
+        "data": {
+          "theory": "pmt"
+        }
+      },
+      {
+        "role": "assistant",
+        "kind": "plan",
+        "text": "Hi! Your weakest area in Protection Motivation Theory is self efficacy (level: Low). Here is your personalized training. Do these steps in real life - and ask me anything about them.",
+        "at": "2026-11-18_11-52-31",
+        "data": {
+          "area": "self_efficacy",
+          "steps": [
+            {
+              "step": "Create a simple, strong password using a password manager\u2019s generator.",
+              "reason": "Easy success builds confidence in your ability to protect accounts."
+            },
+            {
+              "step": "Save the new password in the manager and label it clearly.",
+              "reason": "Seeing it stored safely reinforces that you can manage passwords."
+            },
+            {
+              "step": "Enable two-factor authentication on one frequently used service.",
+              "reason": "Small extra step shows you can add layers without hassle."
+            },
+            {
+              "step": "Practice logging in with the new password and 2FA today.",
+              "reason": "Repeated practice proves you can follow security steps reliably."
+            }
+          ],
+          "sebis_level": "Low"
+        }
+      },
+      {
+        "role": "assistant",
+        "kind": "quiz",
+        "text": "Quiz time! Answer all 5 questions. You need 4 right to pass.",
+        "at": "2026-11-18_11-55-32",
+        "data": {
+          "area": "self_efficacy",
+          "attempt": 1,
+          "pass_mark": 0.7,
+          "quiz": [
+            {
+              "id": "q1",
+              "question": "What is the best way to create a strong password?",
+              "options": [
+                {
+                  "id": "a",
+                  "text": "Use 'password123'"
+                },
+                {
+                  "id": "b",
+                  "text": "Use a password manager's generator"
+                },
+                {
+                  "id": "c",
+                  "text": "Reuse your birthday"
+                },
+                {
+                  "id": "d",
+                  "text": "Write it on a sticky note"
+                }
+              ]
+            },
+            {
+              "id": "q2",
+              "question": "Where should you store the new password after creating it?",
+              "options": [
+                {
+                  "id": "a",
+                  "text": "In a text file on the desktop"
+                },
+                {
+                  "id": "b",
+                  "text": "In your email drafts"
+                },
+                {
+                  "id": "c",
+                  "text": "In a notebook under your pillow"
+                },
+                {
+                  "id": "d",
+                  "text": "In the password manager"
+                }
+              ]
+            },
+            {
+              "id": "q3",
+              "question": "What does enabling two-factor authentication (2FA) add?",
+              "options": [
+                {
+                  "id": "a",
+                  "text": "It disables the password"
+                },
+                {
+                  "id": "b",
+                  "text": "It makes the password longer"
+                },
+                {
+                  "id": "c",
+                  "text": "It requires a second proof of identity"
+                },
+                {
+                  "id": "d",
+                  "text": "It sends you ads"
+                }
+              ]
+            },
+            {
+              "id": "q4",
+              "question": "If you receive a message asking for your password, what should you do?",
+              "options": [
+                {
+                  "id": "a",
+                  "text": "Forward to friends"
+                },
+                {
+                  "id": "b",
+                  "text": "Delete it and do not reply"
+                },
+                {
+                  "id": "c",
+                  "text": "Click the link to verify"
+                },
+                {
+                  "id": "d",
+                  "text": "Reply with your password"
+                }
+              ]
+            },
+            {
+              "id": "q5",
+              "question": "After setting up a new password and 2FA, what is a good practice to build confidence?",
+              "options": [
+                {
+                  "id": "a",
+                  "text": "Share the password with a coworker"
+                },
+                {
+                  "id": "b",
+                  "text": "Log in once today using both"
+                },
+                {
+                  "id": "c",
+                  "text": "Never log in again"
+                },
+                {
+                  "id": "d",
+                  "text": "Write it down on paper"
+                }
+              ]
+            }
+          ],
+          "message": "Pass the quiz to continue with your training."
+        }
+      },
+      {
+        "role": "assistant",
+        "kind": "quiz_result",
+        "text": "You scored 0/5. The key point is that strong, unique passwords should never be made or kept by yourself \u2013 let a password\u2011manager generate them and store them for you, then add a second layer of protection with two\u2011factor authentication. This way you don\u2019t have to remember crazy strings and attackers can\u2019t get in with just a stolen password. Easy tip: whenever you create a new login, click the manager\u2019s \u201cgenerate & save\u201d button and immediately turn on 2FA for that account.\n\nYou did not pass the quiz yet. Read the answers below. Try again with new questions.",
+        "at": "2026-11-18_11-58-23",
+        "data": {
+          "passed": false,
+          "score": "0/5",
+          "new_plan_next": false
+        }
+      },
+      {
+        "role": "assistant",
+        "kind": "plan",
+        "text": "Hi! Your weakest area in Technology Threat Avoidance Theory is self efficacy (level: Medium). Here is your personalized training. Do these steps in real life - and ask me anything about them.",
+        "at": "2026-11-18_12-19-17",
+        "data": {
+          "area": "self_efficacy",
+          "steps": [
+            {
+              "step": "Write down one easy password rule and use it for a new account today.",
+              "reason": "Simple rule builds confidence in creating passwords."
+            },
+            {
+              "step": "Use a password manager\u2019s built\u2011in password generator for one site.",
+              "reason": "Seeing a tool work reduces fear of making strong passwords."
+            },
+            {
+              "step": "Check a password\u2019s strength with an online checker for a password you already have.",
+              "reason": "Immediate feedback shows you can assess security yourself."
+            },
+            {
+              "step": "Set a reminder to update one password tomorrow.",
+              "reason": "Small, doable task reinforces belief you can manage security."
+            }
+          ],
+          "sebis_level": "Medium"
+        }
+      }
+    ],
+    "subjective_norm": [
+      {
+        "role": "user",
+        "kind": "theory_choice",
+        "text": "I choose Theory of Planned Behavior.",
+        "at": "2026-11-18_11-59-10",
+        "data": {
+          "theory": "tpb"
+        }
+      },
+      {
+        "role": "assistant",
+        "kind": "plan",
+        "text": "Hi! Your weakest area in Theory of Planned Behavior is subjective norm (level: Medium). Here is your personalized training. Do these steps in real life - and ask me anything about them.",
+        "at": "2026-11-18_11-59-19",
+        "data": {
+          "area": "subjective_norm",
+          "steps": [
+            {
+              "step": "Ask a trusted friend to review your password practices.",
+              "reason": "Shows you care about expectations, boosting perceived social pressure."
+            },
+            {
+              "step": "Join a local or online cybersecurity community for daily tips.",
+              "reason": "Peers\u2019 norms reinforce secure habits you\u2019ll want to follow."
+            },
+            {
+              "step": "Share one security tip with a family member today.",
+              "reason": "Creates mutual expectation, making security a shared norm."
+            },
+            {
+              "step": "Post a short security win on social media, ask for feedback.",
+              "reason": "Public acknowledgment invites others\u2019 approval, strengthening perceived social expectations."
+            }
+          ],
+          "sebis_level": "Medium"
+        }
+      },
+      {
+        "role": "user",
+        "kind": "text",
+        "text": "1",
+        "at": "2026-11-18_12-00-16"
+      },
+      {
+        "role": "assistant",
+        "kind": "text",
+        "text": "Step\u202f1: Ask a trusted friend to review your password practices. They can check if your passwords are long, unique, and not easy to guess, and give you feedback. This shows you care about what people around you expect, boosting the social pressure to stay safe.\n\nWould you like a simple example of this?",
+        "at": "2026-11-18_12-00-16",
+        "data": {
+          "on_topic": true,
+          "follow_up": "Would you like a simple example of this?",
+          "suggestions": [
+            "How to choose a strong password",
+            "How to find a cybersecurity community",
+            "How to share a tip with family"
+          ]
+        }
+      }
+    ],
+    "perceived_threat": [
+      {
+        "role": "user",
+        "kind": "theory_choice",
+        "text": "I choose Technology Threat Avoidance Theory.",
+        "at": "2026-11-18_12-01-23",
+        "data": {
+          "theory": "ttat"
+        }
+      },
+      {
+        "role": "assistant",
+        "kind": "plan",
+        "text": "Hi! Your weakest area in Technology Threat Avoidance Theory is perceived threat (level: Medium). Here is your personalized training. Do these steps in real life - and ask me anything about them.",
+        "at": "2026-11-18_12-02-25",
+        "data": {
+          "area": "perceived_threat",
+          "steps": [
+            {
+              "step": "Read a short news story about a recent phone scam.",
+              "reason": "Shows real danger, making threat feel more real."
+            },
+            {
+              "step": "Watch a 2-minute video on how hackers steal personal data.",
+              "reason": "Visual example helps you see the risk clearly."
+            },
+            {
+              "step": "List three ways your own accounts could be attacked.",
+              "reason": "Personalizing risk makes threat feel closer to you."
+            },
+            {
+              "step": "Set a reminder to change passwords every 3 months.",
+              "reason": "Acts on threat, turning worry into protective action."
+            }
+          ],
+          "sebis_level": "Medium"
+        }
+      },
+      {
+        "role": "user",
+        "kind": "text",
+        "text": "2",
+        "at": "2026-11-18_12-02-45"
+      },
+      {
+        "role": "assistant",
+        "kind": "text",
+        "text": "Step 2: Watch a short 2\u2011minute video that shows how hackers steal personal data. Seeing a real\u2011life example makes the danger clear and helps you remember how attacks happen, like tricking you into giving away passwords or installing hidden software. After watching, you\u2019ll know what to look out for and feel more prepared to protect yourself.\n\nWould you like a quick example of data theft?",
+        "at": "2026-11-18_12-02-45",
+        "data": {
+          "on_topic": true,
+          "follow_up": "Would you like a quick example of data theft?",
+          "suggestions": [
+            "What is a phishing email?",
+            "How to create a strong password?",
+            "How often should I update software?"
+          ]
+        }
+      },
+      {
+        "role": "assistant",
+        "kind": "quiz",
+        "text": "Quiz time! Answer all 5 questions. You need 4 right to pass.",
+        "at": "2026-11-18_12-08-17",
+        "data": {
+          "area": "perceived_threat",
+          "attempt": 1,
+          "pass_mark": 0.7,
+          "quiz": [
+            {
+              "id": "q1",
+              "question": "Which training step involves reading about a recent phone scam?",
+              "options": [
+                {
+                  "id": "a",
+                  "text": "Set a reminder to change passwords every 3 months."
+                },
+                {
+                  "id": "b",
+                  "text": "Read a short news story about a recent phone scam."
+                },
+                {
+                  "id": "c",
+                  "text": "List three ways your own accounts could be attacked."
+                },
+                {
+                  "id": "d",
+                  "text": "Watch a video"
+                }
+              ]
+            },
+            {
+              "id": "q2",
+              "question": "What is a common sign of a phishing text message?",
+              "options": [
+                {
+                  "id": "a",
+                  "text": "No link in the message"
+                },
+                {
+                  "id": "b",
+                  "text": "Message asks for your password"
+                },
+                {
+                  "id": "c",
+                  "text": "Spelling errors"
+                },
+                {
+                  "id": "d",
+                  "text": "Message from a known contact"
+                }
+              ]
+            },
+            {
+              "id": "q3",
+              "question": "After watching the video on how hackers steal data, which action best protects your accounts?",
+              "options": [
+                {
+                  "id": "a",
+                  "text": "Use the same password everywhere"
+                },
+                {
+                  "id": "b",
+                  "text": "Enable two-factor authentication"
+                },
+                {
+                  "id": "c",
+                  "text": "Ignore software updates"
+                },
+                {
+                  "id": "d",
+                  "text": "Share passwords with friends"
+                }
+              ]
+            },
+            {
+              "id": "q4",
+              "question": "How often should you change your passwords according to the training?",
+              "options": [
+                {
+                  "id": "a",
+                  "text": "Every year"
+                },
+                {
+                  "id": "b",
+                  "text": "Every 3 months"
+                },
+                {
+                  "id": "c",
+                  "text": "Every month"
+                },
+                {
+                  "id": "d",
+                  "text": "Never"
+                }
+              ]
+            },
+            {
+              "id": "q5",
+              "question": "Which of the following is NOT a way your accounts could be attacked?",
+              "options": [
+                {
+                  "id": "a",
+                  "text": "Physical theft of your phone"
+                },
+                {
+                  "id": "b",
+                  "text": "Using a password manager"
+                },
+                {
+                  "id": "c",
+                  "text": "Brute-force guessing"
+                },
+                {
+                  "id": "d",
+                  "text": "Phishing"
+                }
+              ]
+            }
+          ],
+          "message": "Pass the quiz to continue with your training."
+        }
+      },
+      {
+        "role": "assistant",
+        "kind": "quiz_result",
+        "text": "You scored 2/5. You missed the core idea that the training is a simple four\u2011step checklist: first **read** a short news story about a phone scam, then **watch** the quick video, **list** three ways your accounts could be attacked, and finally **set a reminder** to change passwords every three months.  \n\n**Tip:** Put a recurring calendar event called \u201cChange passwords\u201d for every 90\u202fdays \u2013 when the reminder pops up, you\u2019ll also recall the earlier steps.\n\nYou did not pass the quiz yet. Read the answers below. Try again with new questions.",
+        "at": "2026-11-18_12-10-13",
+        "data": {
+          "passed": false,
+          "score": "2/5",
+          "new_plan_next": false
+        }
+      },
+      {
+        "role": "assistant",
+        "kind": "quiz",
+        "text": "Quiz time! Answer all 5 questions. You need 4 right to pass.",
+        "at": "2026-11-18_12-11-47",
+        "data": {
+          "area": "perceived_threat",
+          "attempt": 2,
+          "pass_mark": 0.7,
+          "quiz": [
+            {
+              "id": "q1",
+              "question": "What is a common sign of a phishing text message?",
+              "options": [
+                {
+                  "id": "a",
+                  "text": "Misspelled words"
+                },
+                {
+                  "id": "b",
+                  "text": "Personal greeting"
+                },
+                {
+                  "id": "c",
+                  "text": "Official logo"
+                },
+                {
+                  "id": "d",
+                  "text": "Secure link"
+                }
+              ]
+            },
+            {
+              "id": "q2",
+              "question": "Which method was NOT shown in the video as a way hackers steal personal data?",
+              "options": [
+                {
+                  "id": "a",
+                  "text": "Keylogging"
+                },
+                {
+                  "id": "b",
+                  "text": "Using carrier pigeons"
+                },
+                {
+                  "id": "c",
+                  "text": "Social engineering"
+                },
+                {
+                  "id": "d",
+                  "text": "Phishing emails"
+                }
+              ]
+            },
+            {
+              "id": "q3",
+              "question": "Which step helps you protect your accounts after the training?",
+              "options": [
+                {
+                  "id": "a",
+                  "text": "Sharing passwords with friends"
+                },
+                {
+                  "id": "b",
+                  "text": "Writing passwords on sticky notes"
+                },
+                {
+                  "id": "c",
+                  "text": "Using the same password everywhere"
+                },
+                {
+                  "id": "d",
+                  "text": "Changing passwords every 3 months"
+                }
+              ]
+            },
+            {
+              "id": "q4",
+              "question": "When listing ways your accounts could be attacked, which of these is a real threat?",
+              "options": [
+                {
+                  "id": "a",
+                  "text": "Password reuse"
+                },
+                {
+                  "id": "b",
+                  "text": "Using two\u2011factor authentication"
+                },
+                {
+                  "id": "c",
+                  "text": "Keeping software updated"
+                },
+                {
+                  "id": "d",
+                  "text": "Using a password manager"
+                }
+              ]
+            },
+            {
+              "id": "q5",
+              "question": "If you receive a message asking for your login details, what should you do?",
+              "options": [
+                {
+                  "id": "a",
+                  "text": "Reply with the info"
+                },
+                {
+                  "id": "b",
+                  "text": "Forward to friends"
+                },
+                {
+                  "id": "c",
+                  "text": "Click the link and enter details"
+                },
+                {
+                  "id": "d",
+                  "text": "Ignore and report it"
+                }
+              ]
+            }
+          ],
+          "message": "Pass the quiz to continue with your training."
+        }
+      },
+      {
+        "role": "assistant",
+        "kind": "quiz_result",
+        "text": "You scored 4/5 - you passed! You missed that the video never mentioned \u201cusing carrier pigeons\u201d as a way hackers steal data. The main point is that attackers rely on modern, digital tricks\u2014like phishing emails, malicious apps, or fake websites\u2014not old\u2011fashioned, silly methods.  \n\n**Easy tip:** If a method sounds like something from a medieval story (e.g., carrier pigeons), it\u2019s probably not a real hacking technique. Remember: real threats are always tech\u2011based.\n\nQuiz passed! Keep following your steps in daily life. We will check how you are doing over the next days.",
+        "at": "2026-11-18_12-13-32",
+        "data": {
+          "passed": true,
+          "score": "4/5",
+          "new_plan_next": false
+        }
+      },
+      {
+        "role": "assistant",
+        "kind": "consent_request",
+        "text": "One more thing before we continue. As part of your training, CyberShield will test your everyday security habits with simulated security messages (for example fake emails or notifications). They are harmless and you will always be told what they were afterwards. Do you agree?",
+        "at": "2026-11-18_12-13-32"
+      },
+      {
+        "role": "user",
+        "kind": "consent",
+        "text": "I agree.",
+        "at": "2026-11-18_12-13-46"
+      },
+      {
+        "role": "assistant",
+        "kind": "text",
+        "text": "Thank you! Keep following your steps every day. I'm here if you have questions.",
+        "at": "2026-11-18_12-13-46"
+      },
+      {
+        "role": "assistant",
+        "kind": "evaluation_result",
+        "text": "Area mastered! Great job! You didn't click any phishing links and reported every suspicious message. Keep up the excellent vigilance. Your next training area is ready: self efficacy.",
+        "at": "2026-11-18_12-19-08",
+        "data": {
+          "decision": "mastered",
+          "proficiency": 94.0,
+          "level": "High",
+          "evidence": [
+            "You clicked 0 phishing links.",
+            "You reported all 3 phishing messages."
+          ],
+          "next_area": "self_efficacy",
+          "new_plan_next": false
+        }
+      }
+    ]
+  },
+  "contact": {
+    "email": "amnazahood02@gmail.com"
+  },
+  "focus_theory": "ttat",
+  "chat_plan_marks": {
+    "perceived_threat": "ttat:2026-11-18_12-02-25",
+    "self_efficacy": "ttat:2026-11-18_12-19-17"
+  },
+  "background": "non_technical",
+  "consent": true,
+  "notifications": [
+    {
+      "id": "msg-perceived_threat-1-m1",
+      "kind": "message",
+      "title": "New email from LuckyPrize Center",
+      "body": "Congratulations! You've Won a $500 Gift Card",
+      "at": "2026-11-18T07:13:49.548360+00:00",
+      "read": true,
+      "message_id": "m1",
+      "channel": "Email"
+    },
+    {
+      "id": "msg-perceived_threat-1-m2",
+      "kind": "message",
+      "title": "New message from TaxDept Notice",
+      "body": "The tax authority has detected an overdue filing. Immediate payment required to avoid pena",
+      "at": "2026-11-18T07:14:30.201903+00:00",
+      "read": true,
+      "message_id": "m2",
+      "channel": "App notification"
+    },
+    {
+      "id": "msg-perceived_threat-1-m3",
+      "kind": "message",
+      "title": "New message from BankSecure Alerts",
+      "body": "Your account has been locked due to suspicious activity. Verify now to avoid permanent clo",
+      "at": "2026-11-18T07:15:13.112031+00:00",
+      "read": true,
+      "message_id": "m3",
+      "channel": "SMS"
+    },
+    {
+      "id": "msg-perceived_threat-1-m4",
+      "kind": "message",
+      "title": "New email from TeamCoord",
+      "body": "Team Meeting Reminder",
+      "at": "2026-11-18T07:15:49.548360+00:00",
+      "read": true,
+      "message_id": "m4",
+      "channel": "Email"
+    },
+    {
+      "id": "result-perceived_threat-1",
+      "kind": "result",
+      "title": "Your progress check is complete",
+      "body": "Open the chat to see how you did.",
+      "at": "2026-11-18T07:19:06.564339+00:00",
+      "read": false
+    }
+  ],
+  "last_drill_result": {
+    "state": "resolved",
+    "area": "perceived_threat",
+    "attempt": 1,
+    "phishing_total": 3,
+    "genuine_total": 1,
+    "fell_victim": 0,
+    "reported": 3,
+    "ignored": 0,
+    "false_alarms": 0,
+    "report_rate": 1.0,
+    "click_rate": 0.0,
+    "passed": true,
+    "rule_passed": true,
+    "messages": [
+      {
+        "id": "m1",
+        "token": "OWVhNDAxZDktMmVmNC00OGZlLThhZWYtZWY4OTc4ZmYyOGQ3.Pn3tuj0CFCVNgQ",
+        "was_phishing": true,
+        "outcome": "reported",
+        "sender": "LuckyPrize Center",
+        "link_text": "http://claim-prize.reward.example/claim",
+        "message_text": "Dear user, you have been selected to receive a $500 gift card. Claim your prize within 24 hours.",
+        "red_flags": [
+          "Too\u2011good\u2011to\u2011be\u2011true reward",
+          "Pressure to act quickly",
+          "Sender not recognizable"
+        ],
+        "explanation": "Scam lures with a fake prize and urgent claim link."
+      },
+      {
+        "id": "m2",
+        "token": "OWVhNDAxZDktMmVmNC00OGZlLThhZWYtZWY4OTc4ZmYyOGQ3.UoyacBrMRMkurA",
+        "was_phishing": true,
+        "outcome": "reported",
+        "sender": "TaxDept Notice",
+        "link_text": "http://pay-taxes.authority.example/pay",
+        "message_text": "The tax authority has detected an overdue filing. Immediate payment required to avoid penalties.",
+        "red_flags": [
+          "Impersonates government agency",
+          "Requests payment via unknown link",
+          "No personal details included"
+        ],
+        "explanation": "Scam pretends to be a tax agency demanding payment through a bogus link."
+      },
+      {
+        "id": "m3",
+        "token": "OWVhNDAxZDktMmVmNC00OGZlLThhZWYtZWY4OTc4ZmYyOGQ3.wsP8o1kfMIw9Nw",
+        "was_phishing": true,
+        "outcome": "reported",
+        "sender": "BankSecure Alerts",
+        "link_text": "http://account-verify.securebank.example/verify",
+        "message_text": "Your account has been locked due to suspicious activity. Verify now to avoid permanent closure.",
+        "red_flags": [
+          "Urgent threat of account closure",
+          "Unusual sender address",
+          "Link uses non\u2011official domain"
+        ],
+        "explanation": "Scam uses fear and asks you to click a fake verification link."
+      },
+      {
+        "id": "m4",
+        "token": "OWVhNDAxZDktMmVmNC00OGZlLThhZWYtZWY4OTc4ZmYyOGQ3.sL45IsV-RSJgCQ",
+        "was_phishing": false,
+        "outcome": "opened_genuine",
+        "sender": "TeamCoord",
+        "link_text": "http://intranet.company.example/meeting",
+        "message_text": "Reminder: The weekly team meeting is scheduled for Thursday at 10\u202fAM via VideoConnect. See agenda attached.",
+        "red_flags": [],
+        "explanation": "Legitimate internal reminder with a safe internal link."
+      }
+    ],
+    "resolved_at": "2026-11-18T07:19:06.564339+00:00",
+    "new_plan_next": false,
+    "next_area": "self_efficacy",
+    "all_done": false,
+    "evaluation": {
+      "decision": "mastered",
+      "proficiency": 94.0,
+      "level": "High",
+      "quiz_score": 80.0,
+      "simulation_score": 100.0,
+      "previous_proficiency": null,
+      "change": null,
+      "improved": true,
+      "evidence": [
+        "You clicked 0 phishing links.",
+        "You reported all 3 phishing messages."
+      ],
+      "coaching_focus": "",
+      "feedback": "Great job! You didn't click any phishing links and reported every suspicious message. Keep up the excellent vigilance.",
+      "ai_used": true
+    },
+    "decision": "mastered",
+    "message": "Area mastered! Great job! You didn't click any phishing links and reported every suspicious message. Keep up the excellent vigilance. Your next training area is ready: self efficacy."
+  }
+}

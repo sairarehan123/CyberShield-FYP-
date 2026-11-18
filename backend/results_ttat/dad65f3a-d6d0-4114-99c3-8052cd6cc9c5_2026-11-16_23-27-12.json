@@ -1,0 +1,63 @@
+{
+  "assessment_id": "dad65f3a-d6d0-4114-99c3-8052cd6cc9c5_2026-11-16_23-27-12",
+  "user_id": "dad65f3a-d6d0-4114-99c3-8052cd6cc9c5",
+  "timestamp": "2026-11-16_23-27-12",
+  "answers": {
+    "SUS1": 1,
+    "SUS2": 2,
+    "SUS3": 6,
+    "SUS4": 5,
+    "SUS5": 4,
+    "SUS6": 7,
+    "SEV1": 6,
+    "SEV2": 5,
+    "SEV3": 4,
+    "SEV4": 3,
+    "SEV5": 2,
+    "THR1": 1,
+    "THR2": 5,
+    "THR3": 5,
+    "THR4": 2,
+    "THR5": 2,
+    "THR6": 6,
+    "THR7": 5,
+    "EFF1": 3,
+    "EFF2": 2,
+    "EFF3": 1,
+    "EFF4": 6,
+    "EFF5": 5,
+    "SE1": 4,
+    "SE2": 3,
+    "SE3": 2,
+    "SE4": 1,
+    "SE5": 6,
+    "COST1": 5,
+    "COST2": 4,
+    "COST3": 3,
+    "COST4": 2,
+    "COST5": 2,
+    "COST6": 4,
+    "COST7": 5
+  },
+  "profile": {
+    "construct_scores": {
+      "perceived_susceptibility": 4.17,
+      "perceived_severity": 3.6,
+      "perceived_threat": 3.71,
+      "response_effectiveness": 3.4,
+      "self_efficacy": 3.2,
+      "response_cost": 4.43
+    },
+    "construct_levels": {
+      "perceived_susceptibility": "Medium",
+      "perceived_severity": "Medium",
+      "perceived_threat": "Medium",
+      "response_effectiveness": "Medium",
+      "self_efficacy": "Low",
+      "response_cost": "Medium"
+    },
+    "overall_score": 3.75,
+    "overall_level": "Medium",
+    "weakest_area": "self_efficacy"
+  }
+}

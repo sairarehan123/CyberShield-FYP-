@@ -1,35 +1,15 @@
 """
-CyberShield - SeBIS Assessment (Questionnaire + Scoring + Save Results)
-
-SeBIS only. This is NOT a test and there is NO retake: it simply records
-how a person usually behaves around their devices (their everyday
-cybersecurity practices). The saved result is later linked to the PMT
-questionnaire (see pmt_assessment.py and theory_linking.py).
-
-This file:
-  1. Welcomes the user and asks for a name/ID (so results can be told apart).
-  2. Asks all 16 real SeBIS questions, one at a time (answer 1-5).
-  3. Uses the scoring engine (sebis_scoring.py) to calculate the profile.
-  4. Prints a clean, presentable summary.
-  5. Saves the result to a JSON file in the "results" folder - a
-     stand-in for the real database, which comes later.
-
-It is used BOTH by the command line (run this file directly) and by the
-FastAPI backend (main.py), which calls build_profile(), save_result()
-and get_latest_result() directly.
-
-Requires sebis_scoring.py to be in the same folder.
-Run it from inside the backend folder:  python sebis_assessment.py
+CyberShield - SeBIS Assessment (Questionnaire + Scoring + Supabase Storage)
 """
 
-import json
-import os
-import re
-from datetime import datetime
-
 from sebis_scoring import SEBIS_ITEMS, build_profile
+from supabase_results import (
+    save_assessment_result,
+    get_latest_assessment_result,
+    get_assessment_result_by_id,
+)
 
-RESULTS_DIR = "results"
+TABLE_NAME = "sebis_results"
 
 
 def collect_answers_from_user():
@@ -58,76 +38,30 @@ def print_profile(user_id, profile):
 
 
 def save_result(user_id, answers, profile, assessment_id=None):
-    """
-    Saves this result to a JSON file, acting as a stand-in for the
-    database. Returns the full saved record (including its
-    assessment_id) so the caller (CLI or API) can use it.
-    """
-    os.makedirs(RESULTS_DIR, exist_ok=True)
-    timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-    if assessment_id is None:
-        assessment_id = f"{user_id}_{timestamp}"
-    filename = f"{RESULTS_DIR}/{assessment_id}.json"
-
-    record = {
-        "assessment_id": assessment_id,
-        "user_id": user_id,
-        "timestamp": timestamp,
-        "answers": answers,
-        "profile": profile,
-    }
-
-    with open(filename, "w") as f:
-        json.dump(record, f, indent=2)
-
-    return record
+    """Saves this SeBIS result to the `sebis_results` table in Supabase."""
+    return save_assessment_result(
+        table_name=TABLE_NAME,
+        user_id=user_id,
+        answers=answers,
+        profile=profile,
+        assessment_id=assessment_id,
+        extra_columns={
+            "subscale_scores": profile["subscale_scores"],
+            "subscale_levels": profile["subscale_levels"],
+        },
+    )
 
 
 def get_latest_result(user_id):
-    """
-    Returns this user's most recent saved SeBIS result, or None if they
-    have none. Used to link SeBIS with PMT - it is NOT used to compare
-    attempts (there is no retake).
-
-    The filename must be exactly "<user_id>_<timestamp>.json", so a user
-    called "test" is never confused with a user called "test_user".
-
-    NOTE: file-based stand-in for a future database query - only this
-    function and save_result() will need to change once a real database
-    exists.
-    """
-    if not os.path.isdir(RESULTS_DIR):
-        return None
-
-    pattern = re.compile(
-        rf"^{re.escape(user_id)}_\d{{4}}-\d{{2}}-\d{{2}}_\d{{2}}-\d{{2}}-\d{{2}}\.json$"
-    )
-    matches = [f for f in os.listdir(RESULTS_DIR) if pattern.match(f)]
-    if not matches:
-        return None
-
-    matches.sort()  # timestamps in the filename sort chronologically
-    with open(os.path.join(RESULTS_DIR, matches[-1])) as f:
-        return json.load(f)
+    """Returns this user's most recent saved SeBIS result from Supabase, or None."""
+    return get_latest_assessment_result(TABLE_NAME, user_id)
 
 
 def get_result_by_id(assessment_id):
-    """Retrieves one saved result by its assessment_id."""
-    filename = f"{RESULTS_DIR}/{assessment_id}.json"
-    if not os.path.isfile(filename):
-        return None
-    with open(filename) as f:
-        return json.load(f)
+    """Retrieves one saved SeBIS result by its assessment_id from Supabase."""
+    return get_assessment_result_by_id(TABLE_NAME, assessment_id)
 
 
-# ---------------------------------------------------------------------
-# Theory-linking (PMT) - see theory_linking.py
-# Takes the SeBIS profile built above, plus the user's PMT profile if they
-# have completed it, and returns the SeBIS profile with a "theory_links"
-# section added. The mapping itself is a DRAFT until the supervisor
-# approves it, and lives in theory_linking.py (SEBIS_TO_PMT).
-# TPB / TTAT are not linked yet.
-# ---------------------------------------------------------------------
 def link_to_theories(profile, pmt_profile=None):
     from theory_linking import link_sebis_to_pmt
     linked = dict(profile)
@@ -135,26 +69,15 @@ def link_to_theories(profile, pmt_profile=None):
     return linked
 
 
-# ---------------------------------------------------------------------
-# Run this file directly to answer the questionnaire in the terminal.
-# ---------------------------------------------------------------------
 if __name__ == "__main__":
     print("=== Welcome to CyberShield ===")
-    print("We are not testing you - we just want to understand how you usually")
-    print("behave around your devices. There are no right or wrong answers.\n")
-
     user_id = ""
     while not user_id:
-        user_id = input("Enter your name or ID: ").strip()
-
-    print(f"\nHi {user_id}, let's begin.\n")
+        user_id = input("Enter your user ID: ").strip()
 
     answers = collect_answers_from_user()
     profile = build_profile(answers)
-
     print_profile(user_id, profile)
 
     record = save_result(user_id, answers, profile)
-    print(f"\nSaved to {RESULTS_DIR}/{record['assessment_id']}.json")
-    print("\nNext step: run  python pmt_assessment.py  and enter the same name")
-    print("to continue to the PMT questions and see how the two connect.")
+    print(f"\nSaved to Supabase ({TABLE_NAME}): {record['assessment_id']}")

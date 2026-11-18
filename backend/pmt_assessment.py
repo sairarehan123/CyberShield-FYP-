@@ -1,29 +1,15 @@
 """
-CyberShield - PMT Assessment (Protection Motivation Theory)
-
-Step 2 of 2. SeBIS (sebis_assessment.py) records what a person usually
-DOES; this questionnaire asks WHY - their motivation to protect their
-devices (30 statements, 7-point scale). Results are saved in their own
-folder, results_pmt/, and then linked to the person's SeBIS result
-through theory_linking.py.
-
-There is NO retake and no comparison between attempts.
-
-Used BOTH by the command line (run this file directly) and by the
-FastAPI backend (main.py).
-
-Run it from inside the backend folder:  python pmt_assessment.py
-(Do the SeBIS questionnaire first, using the same name.)
+CyberShield - PMT Assessment (Protection Motivation Theory + Supabase Storage)
 """
 
-import json
-import os
-import re
-from datetime import datetime
-
 from pmt_scoring import PMT_ITEMS, build_profile
+from supabase_results import (
+    save_assessment_result,
+    get_latest_assessment_result,
+    get_assessment_result_by_id,
+)
 
-RESULTS_DIR = "results_pmt"
+TABLE_NAME = "pmt_results"
 
 SCALE_LABELS = {
     1: "Strongly disagree",
@@ -64,57 +50,30 @@ def print_profile(user_id, profile):
 
 
 def save_result(user_id, answers, profile, assessment_id=None):
-    """
-    Saves this result to a JSON file (stand-in for the database).
-    Returns the full saved record so the caller (CLI or API) can use it.
-    """
-    os.makedirs(RESULTS_DIR, exist_ok=True)
-    timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-    if assessment_id is None:
-        assessment_id = f"{user_id}_{timestamp}"
-    filename = f"{RESULTS_DIR}/{assessment_id}.json"
-
-    record = {
-        "assessment_id": assessment_id,
-        "user_id": user_id,
-        "timestamp": timestamp,
-        "answers": answers,
-        "profile": profile,
-    }
-
-    with open(filename, "w") as f:
-        json.dump(record, f, indent=2)
-
-    return record
+    """Saves this PMT result to the `pmt_results` table in Supabase."""
+    return save_assessment_result(
+        table_name=TABLE_NAME,
+        user_id=user_id,
+        answers=answers,
+        profile=profile,
+        assessment_id=assessment_id,
+        extra_columns={
+            "threat_appraisal_score": profile.get("threat_appraisal_score"),
+            "coping_appraisal_score": profile.get("coping_appraisal_score"),
+            "construct_scores": profile["construct_scores"],
+            "construct_levels": profile["construct_levels"],
+        },
+    )
 
 
 def get_latest_result(user_id):
-    """
-    Returns this user's most recent saved PMT result, or None. Used to link
-    PMT with SeBIS. The filename must be exactly "<user_id>_<timestamp>.json".
-    """
-    if not os.path.isdir(RESULTS_DIR):
-        return None
-
-    pattern = re.compile(
-        rf"^{re.escape(user_id)}_\d{{4}}-\d{{2}}-\d{{2}}_\d{{2}}-\d{{2}}-\d{{2}}\.json$"
-    )
-    matches = [f for f in os.listdir(RESULTS_DIR) if pattern.match(f)]
-    if not matches:
-        return None
-
-    matches.sort()
-    with open(os.path.join(RESULTS_DIR, matches[-1])) as f:
-        return json.load(f)
+    """Returns this user's most recent saved PMT result from Supabase, or None."""
+    return get_latest_assessment_result(TABLE_NAME, user_id)
 
 
 def get_result_by_id(assessment_id):
-    """Retrieves one saved result by its assessment_id."""
-    filename = f"{RESULTS_DIR}/{assessment_id}.json"
-    if not os.path.isfile(filename):
-        return None
-    with open(filename) as f:
-        return json.load(f)
+    """Retrieves one saved PMT result by its assessment_id from Supabase."""
+    return get_assessment_result_by_id(TABLE_NAME, assessment_id)
 
 
 def print_linked_result(sebis_record, pmt_profile):
@@ -122,7 +81,6 @@ def print_linked_result(sebis_record, pmt_profile):
     from theory_linking import link_sebis_to_pmt
 
     links = link_sebis_to_pmt(sebis_record["profile"], pmt_profile)
-
     print("\n=== SeBIS (behavior)  <->  PMT (motivation) ===")
     for area, info in links["areas"].items():
         barrier = info["likely_barrier"] or "none found"
@@ -130,38 +88,22 @@ def print_linked_result(sebis_record, pmt_profile):
         for r in info["related_constructs"]:
             print(f"      - {r['construct']}: {r['score']} ({r['level']})")
     print(f"\n  {links['focus']['message']}")
-    print("  (Mapping is a DRAFT - not yet approved by the supervisor.)")
 
 
-# ---------------------------------------------------------------------
-# Run this file directly to answer the PMT questions in the terminal.
-# ---------------------------------------------------------------------
 if __name__ == "__main__":
     from sebis_assessment import get_latest_result as get_latest_sebis
 
-    print("=== CyberShield - PMT Questions ===")
-    print("These statements are about why you do, or don't, protect your devices.")
-    print("There are no right or wrong answers.\n")
-
     user_id = ""
     while not user_id:
-        user_id = input("Enter the SAME name or ID you used for SeBIS: ").strip()
+        user_id = input("Enter the SAME user ID you used for SeBIS: ").strip()
 
     sebis_record = get_latest_sebis(user_id)
-    if sebis_record is None:
-        print(f"\nNo SeBIS result found for '{user_id}'. You can still answer the PMT")
-        print("questions, but they can only be linked to SeBIS once it is done")
-        print("(run: python sebis_assessment.py).\n")
-    else:
-        print(f"\nFound your SeBIS result, {user_id}. Let's continue.\n")
-
     answers = collect_answers_from_user()
     profile = build_profile(answers)
-
     print_profile(user_id, profile)
 
     record = save_result(user_id, answers, profile)
-    print(f"\nSaved to {RESULTS_DIR}/{record['assessment_id']}.json")
+    print(f"\nSaved to Supabase ({TABLE_NAME}): {record['assessment_id']}")
 
     if sebis_record is not None:
         print_linked_result(sebis_record, profile)

@@ -170,7 +170,7 @@ export default function LearnScreen({ navigation }) {
                 navigation.navigate('Chatbot', {
                   userId,
                   userName,
-                  assessmentRoute: 'Assess',
+                  assessmentRoute: 'SeBISIntro',
                 })
               }
               style={styles.coachBtn}

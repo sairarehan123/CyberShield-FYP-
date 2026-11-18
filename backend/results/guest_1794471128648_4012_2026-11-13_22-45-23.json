@@ -1,0 +1,40 @@
+{
+  "assessment_id": "guest_1794471128648_4012_2026-11-13_22-45-23",
+  "user_id": "guest_1794471128648_4012",
+  "timestamp": "2026-11-13_22-45-23",
+  "answers": {
+    "F3": 2,
+    "F4": 1,
+    "F5": 1,
+    "F6": 2,
+    "F12": 2,
+    "F13": 1,
+    "F14": 2,
+    "F15": 1,
+    "F7": 1,
+    "F8": 1,
+    "F10": 2,
+    "F11": 1,
+    "F16": 1,
+    "F1": 2,
+    "F2": 2,
+    "F9": 1
+  },
+  "profile": {
+    "subscale_scores": {
+      "device_securement": 1.5,
+      "password_generation": 2.5,
+      "proactive_awareness": 4.4,
+      "updating": 1.67
+    },
+    "subscale_levels": {
+      "device_securement": "Low",
+      "password_generation": "Medium",
+      "proactive_awareness": "High",
+      "updating": "Low"
+    },
+    "overall_score": 2.52,
+    "overall_level": "Medium",
+    "weakest_area": "device_securement"
+  }
+}

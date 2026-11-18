@@ -18,6 +18,7 @@ import { spacing, typography, appColors } from './theme';
  * Props (all optional): userId, userName, onExit, onTakeAssessment. userId / userName can also come from route.params.
  * onTakeAssessment: called when the user taps "Take my assessment" (the host opens its assessment screen).
  * Or pass route.params.assessmentRoute = the name of that screen and the module navigates there itself.
+ * route.params.initialView = 'inbox' | 'chat' skips the splash (used when the user taps a notification).
  */
 export default function ChatbotApp({ navigation, route, userId: userIdProp, userName: userNameProp, onExit, onTakeAssessment: onTakeAssessmentProp }) {
   const params = (route && route.params) || {};
@@ -25,36 +26,16 @@ export default function ChatbotApp({ navigation, route, userId: userIdProp, user
   const name = userNameProp || params.userName || userId;
   const exit = onExit || (navigation && navigation.canGoBack && navigation.canGoBack() ? () => navigation.goBack() : undefined);
 
-  const goHome = navigation
-    ? () =>
-        navigation.reset({
-          index: 0,
-          routes: [
-            {
-              name: 'Home',
-              params: { tab: 'home', ts: Date.now(), userId, userName: name },
-            },
-          ],
-        })
-    : exit;
-
-  const goProfile = navigation
-    ? () =>
-        navigation.reset({
-          index: 0,
-          routes: [
-            {
-              name: 'Home',
-              params: { tab: 'profile', ts: Date.now(), userId, userName: name },
-            },
-          ],
-        })
-    : undefined;
-
   const takeAssessment = onTakeAssessmentProp || (navigation && navigation.navigate && params.assessmentRoute ? () => navigation.navigate(params.assessmentRoute) : undefined);
   const t = useTrainingChat(userId);
-  const [view, setView] = useState('splash'); // splash | home | chat | inbox
+  const startView = params.initialView === 'inbox' || params.initialView === 'chat' ? params.initialView : 'splash';
+  const [view, setView] = useState(startView); // splash | home | chat | inbox
   const [seed, setSeed] = useState(null);
+
+  // Opened from a notification (navigate('Chatbot', { initialView: 'inbox' | 'chat' })) while already mounted.
+  useEffect(() => {
+    if (params.initialView === 'inbox' || params.initialView === 'chat') setView(params.initialView);
+  }, [params.initialView, params.messageId]);
 
   // Coming back from the assessment screens: reload, so the chat unlocks by itself.
   useEffect(() => {
@@ -85,7 +66,7 @@ export default function ChatbotApp({ navigation, route, userId: userIdProp, user
             <Text style={styles.errTitle}>{t.error.needsAssessment ? 'Take your assessment first' : 'Something went wrong'}</Text>
             <Text style={styles.errText}>{t.error.needsAssessment ? 'Your coach builds your training from your assessment results.' : t.error.message}</Text>
             <AppButton title="Try again" onPress={t.reload} style={{ marginTop: spacing.lg, alignSelf: 'stretch' }} />
-            {goHome ? <AppButton title="Go to Home" variant="text" onPress={goHome} /> : null}
+            {exit ? <AppButton title="Go back" variant="text" onPress={exit} /> : null}
           </Card>
         </SafeAreaView>
       </Background>
@@ -94,17 +75,7 @@ export default function ChatbotApp({ navigation, route, userId: userIdProp, user
 
   let body;
   if (view === 'home') {
-    body = (
-      <HomeView
-        chat={t.chat}
-        name={name}
-        onGoHome={goHome}
-        onOpenProfile={goProfile}
-        onTakeAssessment={takeAssessment}
-        onOpenChat={openChat}
-        onOpenInbox={() => setView('inbox')}
-      />
-    );
+    body = <HomeView chat={t.chat} name={name} onExit={exit} onTakeAssessment={takeAssessment} onOpenChat={openChat} onOpenInbox={() => setView('inbox')} />;
   } else if (!t.chat) {
     body = (
       <Background>

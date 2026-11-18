@@ -1,0 +1,60 @@
+{
+  "assessment_id": "dad65f3a-d6d0-4114-99c3-8052cd6cc9c5_2026-11-16_10-50-47",
+  "user_id": "dad65f3a-d6d0-4114-99c3-8052cd6cc9c5",
+  "timestamp": "2026-11-16_10-50-47",
+  "answers": {
+    "PS1": 1,
+    "PS2": 3,
+    "PS3": 5,
+    "PS4": 4,
+    "PS5": 5,
+    "PS6": 4,
+    "PV1": 5,
+    "PV2": 6,
+    "PV3": 7,
+    "PV4": 4,
+    "PV5": 5,
+    "PV6": 1,
+    "RC1": 1,
+    "RC2": 3,
+    "RC3": 4,
+    "RC4": 5,
+    "RC5": 3,
+    "RC6": 5,
+    "RE1": 4,
+    "RE2": 2,
+    "RE3": 4,
+    "RE4": 4,
+    "SE1": 4,
+    "SE2": 6,
+    "SE3": 3,
+    "SE4": 5,
+    "SE5": 6,
+    "SI1": 4,
+    "SI2": 3,
+    "SI3": 4
+  },
+  "profile": {
+    "construct_scores": {
+      "perceived_severity": 3.67,
+      "perceived_vulnerability": 4.67,
+      "response_cost": 4.5,
+      "response_efficacy": 3.5,
+      "self_efficacy": 4.8,
+      "security_intention": 3.67
+    },
+    "construct_levels": {
+      "perceived_severity": "Medium",
+      "perceived_vulnerability": "Medium",
+      "response_cost": "Medium",
+      "response_efficacy": "Medium",
+      "self_efficacy": "High",
+      "security_intention": "Medium"
+    },
+    "threat_appraisal_score": 4.17,
+    "coping_appraisal_score": 4.27,
+    "overall_score": 4.23,
+    "overall_level": "Medium",
+    "weakest_area": "response_efficacy"
+  }
+}

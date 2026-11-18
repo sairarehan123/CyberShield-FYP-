@@ -1,27 +1,18 @@
+﻿# Environment & Secrets
+.env
+backend/.env
+frontend/.env
+
+# Dependencies & Virtual Environments
+node_modules/
+frontend/node_modules/
+venv/
+.venv/
+backend/venv/
 __pycache__/
 *.pyc
-.vscode/
-.env
-results/
-results_pmt/
-node_modules/
+
+# Expo / Build Artifacts
 .expo/
 dist/
-# Python virtual environment
-backend/venv/
-
-# macOS system files
-.DS_Store
-
-# Local environment files
-.env.*
-!.env.example
-.env
-.env.*
-!.env.example
-node_modules/
-.expo/
-.venv/
-__pycache__/
-results*/
-*.bak
+build/

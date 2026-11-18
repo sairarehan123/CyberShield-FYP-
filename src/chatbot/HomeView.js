@@ -35,7 +35,7 @@ function Tile({ colors, icon, title, sub, badge, onPress, dim }) {
 }
 
 /** Home of the chatbot: greeting, today's training, quick prompts, services and chat history. */
-export default function HomeView({ chat, name, onGoHome, onOpenProfile, onOpenChat, onOpenInbox, onTakeAssessment }) {
+export default function HomeView({ chat, name, onExit, onOpenChat, onOpenInbox, onTakeAssessment }) {
   const stage = chat && chat.stage;
   const hero = HERO[stage] || HERO.learning;
   const actions = (chat && chat.actions) || [];
@@ -59,20 +59,12 @@ export default function HomeView({ chat, name, onGoHome, onOpenProfile, onOpenCh
     <Background>
       <SafeAreaView style={{ flex: 1 }} edges={['top']}>
         <View style={styles.header}>
-          {onGoHome ? <CircleButton icon="home-outline" label="Home" onPress={onGoHome} /> : <View style={{ width: 44 }} />}
+          {onExit ? <CircleButton icon="chevron-back" label="Back" onPress={onExit} /> : <View style={{ width: 44 }} />}
           <View style={styles.titleRow}>
             <Icon name="sparkles" size={16} color={appColors.primary} />
             <Text style={styles.headerTitle}>{ASSISTANT_NAME}</Text>
           </View>
-          <Pressable
-            onPress={onOpenProfile}
-            disabled={!onOpenProfile}
-            accessibilityRole="button"
-            accessibilityLabel="Profile"
-            style={({ pressed }) => [pressed && { opacity: 0.85, transform: [{ scale: 0.96 }] }]}
-          >
-            <Avatar letter={name} />
-          </Pressable>
+          <Avatar letter={name} />
         </View>
 
         <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>

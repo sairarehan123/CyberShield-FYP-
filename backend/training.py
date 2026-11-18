@@ -6,25 +6,12 @@ AI model (Groq) to write a SHORT personalised training plan for ONE area at a ti
     3 to 5 short steps, each with the reason.
 
 ONE AREA AT A TIME
-  * The first plan is for the user's WEAKEST SeBIS area (lowest score).
-  * When the user finishes it (complete_current_area), the NEXT weakest area is
-    unlocked. The user is never shown the whole sequence - only the current area
-    and the name of the next one.
-  * The user does NOT just tick "done". To unlock the next area they must pass a
-    QUIZ (training_check.py = knowledge) and then a 7-day PHISHING EVALUATION
-    (training_drill.py = skill: several simulated messages are SENT to the user by email / push;
-    clicking a phishing link = fell victim, reporting it = good). If they fail twice, the AI
-    writes a new, easier plan.
-  * Progress is saved in results_training/<user_id>_progress.json.
-
-Safety rules
-  * Only scores / levels / construct names are sent to the AI. NEVER a name or user id.
-  * The API key is read from backend/.env (git-ignored). It is never in the code.
-  * If the AI fails (no internet, bad key, bad answer) the last saved plan for the
-    user is returned instead. If there is none, a clear "try again" error is raised.
-  * Works for any number of theories: it just reads whatever reasons the profile holds.
-
-Run in the terminal (from the backend folder):  python training.py
+- When a specific theory (pmt / tpb / ttat) is selected, the plan targets that
+  theory's OWN weakest constructs first (lowest score in that theory's questionnaire).
+- Otherwise, it falls back to the user's weakest SeBIS area.
+- When the user finishes it (complete_current_area), the NEXT weakest area is
+  unlocked.
+- Progress is saved in results_training/<user_id>_progress.json.
 """
 
 import functools
@@ -36,6 +23,7 @@ import urllib.request
 import threading
 from datetime import datetime
 
+import theory_linking
 from profiling import build_user_profile
 
 RESULTS_DIR = "results_training"
@@ -136,29 +124,70 @@ THEORY_LABELS = {
     "ttat": "Technology Threat Avoidance Theory",
 }
 
+THEORY_MEANINGS = {
+    "pmt": theory_linking.LOW_SCORE_MEANING,
+    "tpb": theory_linking.TPB_LOW_SCORE_MEANING,
+    "ttat": theory_linking.TTAT_LOW_SCORE_MEANING,
+}
+
 
 def focus_brief(profile, theory):
-    """training_brief where the 'likely reasons' come only from the theory the user chose.
-    Uses ALL drivers of the theory (not just the 2 strongest overall), so a chosen theory still gets reasons."""
-    brief = profile["training_brief"]
-    if not theory:
-        return brief
-    out = []
-    for b in brief:
-        drivers = [d for d in profile["areas"][b["area"]]["drivers"]
-                   if d["theory"] == theory and d["level"] != "High"]
-        reasons = [{"theory": d["theory"], "construct": d["construct"], "score": d["score"],
-                    "level": d["level"], "meaning": d["meaning_if_low"]} for d in drivers[:2]]
-        out.append({**b, "reasons": reasons, "reason_known": bool(reasons)})
-    return out
+    """Builds the training queue ordered by the weakest constructs of the chosen theory
+    (so PMT, TPB, and TTAT each train their own actual weak area rather than repeating the same SeBIS area)."""
+    if theory and theory in profile.get("theories", {}):
+        t_data = profile["theories"][theory]
+        c_scores = t_data.get("construct_scores", {})
+        c_levels = t_data.get("construct_levels", {})
+        meanings = THEORY_MEANINGS.get(theory, {})
+
+        # Sort this theory's constructs from lowest score (weakest) to highest
+        ranked = sorted(c_scores.items(), key=lambda kv: kv[1])
+        weak = [(c, s) for c, s in ranked if c_levels.get(c) != "High"]
+        if not weak and ranked:
+            weak = [ranked[0]]  # even if all High, train the lowest-scoring construct of this theory
+
+        out = []
+        for construct, score in weak:
+            level = c_levels.get(construct, "Low")
+            meaning = meanings.get(construct, "")
+            # Also attach the weakest SeBIS habit so the AI connects the theory factor to real-world habits
+            sebis_weak = profile.get("sebis", {}).get("weakest_area")
+            reasons = [{
+                "theory": theory,
+                "construct": construct,
+                "score": score,
+                "level": level,
+                "meaning": meaning,
+            }]
+            if sebis_weak:
+                sebis_lvl = profile.get("sebis", {}).get("subscale_levels", {}).get(sebis_weak, "Low")
+                reasons.append({
+                    "theory": "sebis",
+                    "construct": sebis_weak,
+                    "score": profile.get("sebis", {}).get("subscale_scores", {}).get(sebis_weak, 0),
+                    "level": sebis_lvl,
+                    "meaning": f"Everyday habit area needing improvement: {_pretty(sebis_weak)}",
+                })
+            out.append({
+                "area": construct,
+                "sebis_score": score,
+                "sebis_level": level,
+                "scale_max": 7,
+                "reasons": reasons,
+                "reason_known": True,
+            })
+        return out
+
+    return profile["training_brief"]
 
 
 def build_prompt(item, retry=False, background=None, theory=None):
-    """item: ONE entry of profile['training_brief']. Contains no names or ids."""
+    """item: ONE entry of focus_brief. Contains no names or ids."""
+    scale_max = item.get("scale_max", 5)
     area = {
         "area": item["area"],
         "current_level": item["sebis_level"],
-        "score_out_of_5": item["sebis_score"],
+        f"score_out_of_{scale_max}": item["sebis_score"],
         "likely_reasons": [
             {"factor": r["construct"], "theory": r["theory"],
              "level": r["level"], "meaning": r["meaning"]}
@@ -174,8 +203,10 @@ def build_prompt(item, retry=False, background=None, theory=None):
         "non_technical": "The person has NO technical background: use very simple everyday words, no jargon.\n",
     }.get(background, "")
     theory_text = (
-        f"The person chose to build their training around {THEORY_LABELS[theory]}. Base the steps and their "
-        "reasons on the factors of this theory listed below.\n"
+        f"The person chose to build their training around {THEORY_LABELS[theory]}. "
+        f"Their weakest construct in {THEORY_LABELS[theory]} is '{_pretty(item['area'])}' "
+        f"(level: {item['sebis_level']}). Base the steps and their reasons directly on improving "
+        f"this specific {THEORY_LABELS[theory]} construct.\n"
     ) if theory in THEORY_LABELS else ""
     return (
         "Write a training plan for a person who is weak in the security area below. "
@@ -330,11 +361,9 @@ def _response(user_id, plan, brief, completed, theories, message_extra=None):
 @locked
 def generate_training(user_id, refresh=False, profile=None):
     """
-    Training for the user's CURRENT area (the weakest one not finished yet).
+    Training for the user's CURRENT area (the weakest one not finished yet for the active theory).
     Raises LookupError if the user has no SeBIS result yet,
     TrainingUnavailable if the AI failed and there is no saved plan for this area.
-    A saved plan is reused, so the user sees the same steps every time they open it;
-    refresh=True asks the AI for a new one.
     """
     load_env()
     if profile is None:
@@ -357,6 +386,10 @@ def generate_training(user_id, refresh=False, profile=None):
     area = item["area"]
 
     saved = progress["plans"].get(area)
+    # Also regenerate if the saved plan was created under a different theory
+    if saved is not None and saved.get("theory") != focus:
+        saved = None
+
     area_checks = progress["checks"].get(area, {})
     retry = area_checks.get("fails", 0) >= FAILS_BEFORE_NEW_PLAN
     if retry:
@@ -382,7 +415,7 @@ def generate_training(user_id, refresh=False, profile=None):
                     else:
                         raise
                 steps = validate_steps(_extract_json(text), area)
-                plan = {"area": area, "priority": rank, "sebis_score": item["sebis_score"],
+                plan = {"area": area, "theory": focus, "priority": rank, "sebis_score": item["sebis_score"],
                         "sebis_level": item["sebis_level"], "steps": steps,
                         "source": "ai", "model": model,
                         "generated_at": datetime.now().strftime("%Y-%m-%d_%H-%M-%S")}
@@ -430,7 +463,7 @@ def print_plan(plan):
         return
     tag = "  <-- your WEAKEST area, start here" if plan["is_weakest"] else ""
     print(f"\n=== Your training: {_pretty(plan['area']).upper()} ===")
-    print(f"(SeBIS {plan['sebis_score']} - {plan['sebis_level']}){tag}\n")
+    print(f"(Score {plan['sebis_score']} - {plan['sebis_level']}){tag}\n")
     for i, s in enumerate(plan["steps"], 1):
         print(f"  {i}. {s['step']}\n     why: {s['reason']}")
     print("\n" + plan["message"])

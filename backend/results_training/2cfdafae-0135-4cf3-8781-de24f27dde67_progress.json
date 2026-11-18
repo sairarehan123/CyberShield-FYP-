@@ -1,0 +1,18 @@
+{
+  "user_id": "2cfdafae-0135-4cf3-8781-de24f27dde67",
+  "completed": [],
+  "current_area": null,
+  "plans": {},
+  "checks": {},
+  "history": [],
+  "chat": {
+    "_general": [
+      {
+        "role": "assistant",
+        "kind": "text",
+        "text": "Hi! I'm your CyberShield coach. Ask me anything about staying safe online or about how this app works. Take your assessment to unlock your personal training.",
+        "at": "2026-11-17_09-57-25"
+      }
+    ]
+  }
+}

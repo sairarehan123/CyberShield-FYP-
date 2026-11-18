@@ -12,7 +12,7 @@ Run with:
 
 import threading
 import time
-from typing import Dict, Optional
+from typing import Dict, List, Optional
 
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import HTMLResponse
@@ -40,11 +40,9 @@ import training_check
 import training_drill
 import training_chat
 from theory_linking import link_sebis_to_pmt
+from auth_routes import router as auth_router
 
 app = FastAPI(title="CyberShield SeBIS API")
-
-from auth_routes import router as auth_router
-app.include_router(auth_router)
 
 # Allows the Expo app (running on a different host/port) to call this API.
 # Tighten this list once you know your real app's origin.
@@ -54,6 +52,8 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+app.include_router(auth_router)
 
 VALID_ITEM_IDS = {item["id"] for item in SEBIS_ITEMS}
 ANSWER_SCALE = [
@@ -484,6 +484,24 @@ def submit_training_check(user_id: str, payload: SubmitCheckRequest):
 def get_training_drill(user_id: str):
     """State: none | consent_required | preparing | scheduled | in_progress | resolved. Holds the INBOX."""
     return training_drill.get_drill(user_id.strip())
+
+
+class NotificationsReadRequest(BaseModel):
+    ids: Optional[List[str]] = None     # leave out to mark everything as read
+
+
+@app.get("/training/{user_id}/notifications")
+def get_training_notifications(user_id: str):
+    """List for the app's notification screen: {unread, notifications[{id,kind,title,body,at,read,target}]}."""
+    try:
+        return training_drill.get_notifications(user_id.strip())
+    except LookupError as e:
+        raise HTTPException(status_code=404, detail=str(e))
+
+
+@app.post("/training/{user_id}/notifications/read")
+def read_training_notifications(user_id: str, payload: NotificationsReadRequest):
+    return training_drill.mark_notifications_read(user_id.strip(), payload.ids)
 
 
 @app.post("/training/{user_id}/drill/{message_id}/click")

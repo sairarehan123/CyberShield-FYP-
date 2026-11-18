@@ -3,24 +3,12 @@
  * Backend address: see config.js.
  * The app never decides anything: the backend owns the stages, the quiz answers and the grading.
  */
-import Constants from 'expo-constants';
 import { NativeModules } from 'react-native';
 import { API_URL, BACKEND_PORT } from './config';
 
-/** Where the backend is. Manual setting first, then Expo's hostUri, then scriptURL, then the Android emulator. */
+/** Where the backend is. Manual setting first, then "the computer that serves this app", then the Android emulator. */
 export function getBaseUrl() {
   if (API_URL) return API_URL.replace(/\/+$/, '');
-
-  const debuggerHost =
-    Constants.expoConfig?.hostUri ||
-    Constants.manifest2?.extra?.expoGo?.debuggerHost ||
-    Constants.manifest?.debuggerHost;
-
-  if (debuggerHost) {
-    const ip = debuggerHost.split(':')[0];
-    return `http://${ip}:${BACKEND_PORT}`;
-  }
-
   try {
     const script = NativeModules && NativeModules.SourceCode && NativeModules.SourceCode.scriptURL;
     const m = /^https?:\/\/([^:/]+)/.exec(script || '');
@@ -74,3 +62,7 @@ export const saveContact = (userId, email, pushToken) => {
 // Simulated messages (the user's inbox).
 export const clickMessage = (userId, messageId) => post(`${base(userId)}/drill/${encodeURIComponent(messageId)}/click`);
 export const reportMessage = (userId, messageId) => post(`${base(userId)}/drill/${encodeURIComponent(messageId)}/report`);
+
+// Notification list (for the host app's notification screen). target.screen = 'inbox' | 'chat'.
+export const getNotifications = (userId) => request(`${base(userId)}/notifications`);
+export const markNotificationsRead = (userId, ids) => post(`${base(userId)}/notifications/read`, ids ? { ids } : {});

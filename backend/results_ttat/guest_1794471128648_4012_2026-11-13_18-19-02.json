@@ -1,0 +1,63 @@
+{
+  "assessment_id": "guest_1794471128648_4012_2026-11-13_18-19-02",
+  "user_id": "guest_1794471128648_4012",
+  "timestamp": "2026-11-13_18-19-02",
+  "answers": {
+    "SUS1": 1,
+    "SUS2": 2,
+    "SUS3": 2,
+    "SUS4": 1,
+    "SUS5": 3,
+    "SUS6": 1,
+    "SEV1": 2,
+    "SEV2": 1,
+    "SEV3": 2,
+    "SEV4": 2,
+    "SEV5": 1,
+    "THR1": 3,
+    "THR2": 1,
+    "THR3": 3,
+    "THR4": 1,
+    "THR5": 2,
+    "THR6": 1,
+    "THR7": 3,
+    "EFF1": 2,
+    "EFF2": 1,
+    "EFF3": 2,
+    "EFF4": 1,
+    "EFF5": 1,
+    "SE1": 2,
+    "SE2": 2,
+    "SE3": 1,
+    "SE4": 3,
+    "SE5": 2,
+    "COST1": 2,
+    "COST2": 2,
+    "COST3": 1,
+    "COST4": 1,
+    "COST5": 2,
+    "COST6": 2,
+    "COST7": 1
+  },
+  "profile": {
+    "construct_scores": {
+      "perceived_susceptibility": 1.67,
+      "perceived_severity": 2.8,
+      "perceived_threat": 2.0,
+      "response_effectiveness": 1.4,
+      "self_efficacy": 2.0,
+      "response_cost": 6.43
+    },
+    "construct_levels": {
+      "perceived_susceptibility": "Low",
+      "perceived_severity": "Low",
+      "perceived_threat": "Low",
+      "response_effectiveness": "Low",
+      "self_efficacy": "Low",
+      "response_cost": "High"
+    },
+    "overall_score": 2.72,
+    "overall_level": "Low",
+    "weakest_area": "response_effectiveness"
+  }
+}

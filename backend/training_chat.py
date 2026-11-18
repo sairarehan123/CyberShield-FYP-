@@ -22,10 +22,6 @@ STAGES (the state machine):
     coaching          the last evaluation said "needs coaching"; the bot helps, a new round is running
     finished          every weak area is mastered
   Mastering an area (training_drill._finish) moves the chat to the NEXT weakest area automatically.
-
-The AI is called through training.llm_complete (Groq by default; any OpenAI-style provider by
-changing LLM_BASE_URL / LLM_API_KEY / LLM_MODEL in backend/.env). Only the area, level, steps and
-the chat text go to the AI - never a name or id.
 """
 
 import json
@@ -120,7 +116,6 @@ BACKGROUND_TEXT = {
     "non_technical": "the user has NO technical background; use everyday words and no jargon.",
     None: "unknown; use simple everyday words.",
 }
-
 
 
 # ---------------------------------------------------------------------
@@ -298,20 +293,21 @@ def _locked(user_id):
 
 
 def _plan_message(plan, retry, theory=None):
-    based = f", based on {THEORY_INFO[theory][0]}" if theory in THEORY_INFO else ""
+    based = f" in {THEORY_INFO[theory][0]}" if theory in THEORY_INFO else ""
     head = ("Let's try a new, easier plan for this area. " if retry else
-            f"Hi! Your weakest security area is {_pretty(plan['area'])} (level: {plan['sebis_level']}). "
-            f"Here is your training{based}. ")
+            f"Hi! Your weakest area{based} is {_pretty(plan['area'])} (level: {plan['sebis_level']}). "
+            f"Here is your personalized training. ")
     return head + "Do these steps in real life - and ask me anything about them."
 
 
 def _sync_plan_message(progress, area, plan):
     """Adds the plan to the chat the first time (or again when a new plan was written)."""
     marks = progress.setdefault("chat_plan_marks", {})
-    if marks.get(area) == plan.get("generated_at"):
+    stamp = f"{plan.get('theory')}:{plan.get('generated_at')}"
+    if marks.get(area) == stamp:
         return
     retry = area in marks
-    marks[area] = plan.get("generated_at")
+    marks[area] = stamp
     add_chat(progress, area, "assistant", _plan_message(plan, retry, progress.get("focus_theory")), kind="plan",
              data={"area": area, "steps": plan["steps"], "sebis_level": plan["sebis_level"]})
 
@@ -389,7 +385,7 @@ def set_background(user_id, background):
 @locked
 def set_theory(user_id, theory):
     """The user chooses which theory (pmt / tpb / ttat) the training is based on. Can be changed while the
-    current area is still in the 'learning' stage (before the quiz): the plan is then rewritten."""
+    current area is still in the 'learning' stage (before the quiz): switches to that theory's weakest area."""
     if not _assessment_done(user_id):
         _locked(user_id)
     theory = (theory or "").strip().lower()
@@ -404,12 +400,20 @@ def set_theory(user_id, theory):
         return get_chat(user_id)
     if old and stage not in (None, "learning"):
         raise ValueError("You can change the theory only before you start the quiz of a training area.")
+
+    # Find the weakest area for the newly chosen theory so the user message logs onto that area
+    profile = build_user_profile(user_id)
+    brief = training.focus_brief(profile, theory) if profile else []
+    target_area = brief[0]["area"] if brief else (area or GENERAL_AREA)
+
     progress["focus_theory"] = theory
-    add_chat(progress, area or GENERAL_AREA, "user", f"I choose {THEORY_INFO[theory][0]}.",
-             kind="theory_choice", data={"theory": theory})
-    if stage == "learning":                      # the plan was not based on this theory: write it again
+    if stage == "learning":
         progress["plans"].pop(area, None)
         progress.get("chat_plan_marks", {}).pop(area, None)
+        progress["current_area"] = None
+
+    add_chat(progress, target_area, "user", f"I choose {THEORY_INFO[theory][0]}.",
+             kind="theory_choice", data={"theory": theory})
     save_progress(progress)
     return get_chat(user_id)
 
@@ -580,6 +584,6 @@ def give_consent(user_id, accepted=True):
         add_chat(progress, area, "assistant",
                  "Thank you! Keep following your steps every day. I'm here if you have questions.")
         save_progress(progress)
-        training_drill.get_drill(user_id)   # creates the schedule of the progress check
+        training_drill.process_user(user_id)   # schedules + immediately sends first due message & notification
     out["stage"] = stage_of(load_progress(user_id), area)
     return out

@@ -33,6 +33,7 @@ export default function SignUpScreen({ navigation }) {
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
 
+  const submittingRef = useRef(false);
   const emailRef = useRef(null);
   const passRef = useRef(null);
   const confirmRef = useRef(null);
@@ -43,6 +44,8 @@ export default function SignUpScreen({ navigation }) {
   };
 
   const handleSignUp = async () => {
+    if (submittingRef.current || loading) return;
+
     const e = {
       name: validateName(form.name),
       email: validateEmail(form.email),
@@ -61,9 +64,10 @@ export default function SignUpScreen({ navigation }) {
       return;
     }
 
-    try {
-      setLoading(true);
+    submittingRef.current = true;
+    setLoading(true);
 
+    try {
       const response = await apiCall('/auth/register', 'POST', {
         name: form.name.trim(),
         email: form.email.trim(),
@@ -73,6 +77,22 @@ export default function SignUpScreen({ navigation }) {
 
       if (response.success) {
         const token = response.data?.session?.accessToken;
+        const requiresConfirmation = response.data?.requiresEmailConfirmation || !token;
+
+        if (requiresConfirmation) {
+          Alert.alert(
+            'Account Created',
+            `Your account has been created for ${form.email.trim()}. Please log in to continue.`,
+            [
+              {
+                text: 'Go to Login',
+                onPress: () => navigation.navigate('Login', { email: form.email.trim() }),
+              },
+            ]
+          );
+          return;
+        }
+
         const user = response.data?.user || { name: form.name.trim(), email: form.email.trim() };
         await saveUserSession(user, token);
 
@@ -83,12 +103,23 @@ export default function SignUpScreen({ navigation }) {
           },
         ]);
       } else {
+        if (response.error?.fields) {
+          setErrors((prev) => ({ ...prev, ...response.error.fields }));
+        }
         const errorMsg = response.error?.message || 'Failed to create account. Please try again.';
         Alert.alert('Registration Error', errorMsg);
       }
     } catch (err) {
-      Alert.alert('Network Error', 'Unable to connect to server. Check your network connection.');
+      Alert.alert(
+        'Connection Delay',
+        'The server took longer than expected to respond. Try logging in with your new credentials—if it says invalid login, register again.',
+        [
+          { text: 'Try Login', onPress: () => navigation.navigate('Login', { email: form.email.trim() }) },
+          { text: 'Stay Here', style: 'cancel' },
+        ]
+      );
     } finally {
+      submittingRef.current = false;
       setLoading(false);
     }
   };

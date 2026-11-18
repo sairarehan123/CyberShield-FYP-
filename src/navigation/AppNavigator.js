@@ -7,6 +7,7 @@ import OnboardingScreen from '../screens/OnboardingScreen';
 import LoginScreen from '../screens/LoginScreen';
 import SignUpScreen from '../screens/SignUpScreen';
 import SettingsScreen from '../screens/SettingsScreen';
+import NotificationsScreen from '../screens/NotificationsScreen';
 
 import MainTabsScreen from '../screens/MainTabsScreen';
 
@@ -58,6 +59,7 @@ export default function AppNavigator() {
         {/* Main app with bottom navigation */}
         <Stack.Screen name="Home" component={MainTabsScreen} />
         <Stack.Screen name="Settings" component={SettingsScreen} />
+        <Stack.Screen name="Notifications" component={NotificationsScreen} />
 
         {/* SeBIS flow */}
         <Stack.Screen name="SeBISIntro" component={SeBISIntroScreen} />

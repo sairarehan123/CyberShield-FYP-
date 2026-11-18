@@ -1,27 +1,15 @@
 """
-CyberShield - TPB Assessment (Theory of Planned Behavior)
-
-Same flow as the PMT assessment: 14 statements on a 7-point scale. Results
-are saved in their own folder, results_tpb/. The result is then combined
-with the person's SeBIS and PMT results by profiling.py.
-
-There is NO retake and no comparison between attempts.
-
-Used BOTH by the command line (run this file directly) and by the FastAPI
-backend (main.py).
-
-Run it from inside the backend folder:  python tpb_assessment.py
-(Do the SeBIS questionnaire first, using the same name.)
+CyberShield - TPB Assessment (Theory of Planned Behavior + Supabase Storage)
 """
 
-import json
-import os
-import re
-from datetime import datetime
-
 from tpb_scoring import TPB_ITEMS, build_profile
+from supabase_results import (
+    save_assessment_result,
+    get_latest_assessment_result,
+    get_assessment_result_by_id,
+)
 
-RESULTS_DIR = "results_tpb"
+TABLE_NAME = "tpb_results"
 
 SCALE_LABELS = {
     1: "Strongly disagree",
@@ -60,73 +48,43 @@ def print_profile(user_id, profile):
 
 
 def save_result(user_id, answers, profile, assessment_id=None):
-    """Saves this result to a JSON file (stand-in for the database)."""
-    os.makedirs(RESULTS_DIR, exist_ok=True)
-    timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-    if assessment_id is None:
-        assessment_id = f"{user_id}_{timestamp}"
-    filename = f"{RESULTS_DIR}/{assessment_id}.json"
-
-    record = {
-        "assessment_id": assessment_id,
-        "user_id": user_id,
-        "timestamp": timestamp,
-        "answers": answers,
-        "profile": profile,
-    }
-    with open(filename, "w") as f:
-        json.dump(record, f, indent=2)
-    return record
+    """Saves this TPB result to the `tpb_results` table in Supabase."""
+    return save_assessment_result(
+        table_name=TABLE_NAME,
+        user_id=user_id,
+        answers=answers,
+        profile=profile,
+        assessment_id=assessment_id,
+        extra_columns={
+            "construct_scores": profile["construct_scores"],
+            "construct_levels": profile["construct_levels"],
+        },
+    )
 
 
 def get_latest_result(user_id):
-    """Most recent saved TPB result for this user, or None."""
-    if not os.path.isdir(RESULTS_DIR):
-        return None
-    pattern = re.compile(
-        rf"^{re.escape(user_id)}_\d{{4}}-\d{{2}}-\d{{2}}_\d{{2}}-\d{{2}}-\d{{2}}\.json$"
-    )
-    matches = sorted(f for f in os.listdir(RESULTS_DIR) if pattern.match(f))
-    if not matches:
-        return None
-    with open(os.path.join(RESULTS_DIR, matches[-1])) as f:
-        return json.load(f)
+    """Most recent saved TPB result from Supabase for this user, or None."""
+    return get_latest_assessment_result(TABLE_NAME, user_id)
 
 
 def get_result_by_id(assessment_id):
-    """Retrieves one saved result by its assessment_id."""
-    filename = f"{RESULTS_DIR}/{assessment_id}.json"
-    if not os.path.isfile(filename):
-        return None
-    with open(filename) as f:
-        return json.load(f)
+    """Retrieves one saved TPB result by its assessment_id from Supabase."""
+    return get_assessment_result_by_id(TABLE_NAME, assessment_id)
 
 
-# ---------------------------------------------------------------------
-# Run this file directly to answer the TPB questions in the terminal.
-# ---------------------------------------------------------------------
 if __name__ == "__main__":
-    from sebis_assessment import get_latest_result as get_latest_sebis
     from profiling import build_user_profile, print_user_profile
-
-    print("=== CyberShield - TPB Questions ===")
-    print("These statements are about your attitude, the people around you and")
-    print("how much in control you feel. There are no right or wrong answers.\n")
 
     user_id = ""
     while not user_id:
-        user_id = input("Enter the SAME name or ID you used for SeBIS: ").strip()
-
-    if get_latest_sebis(user_id) is None:
-        print(f"\nNo SeBIS result found for '{user_id}'. You can still answer, but")
-        print("the user profile needs SeBIS first (run: python sebis_assessment.py).\n")
+        user_id = input("Enter the SAME user ID you used for SeBIS: ").strip()
 
     answers = collect_answers_from_user()
     profile = build_profile(answers)
     print_profile(user_id, profile)
 
     record = save_result(user_id, answers, profile)
-    print(f"\nSaved to {RESULTS_DIR}/{record['assessment_id']}.json")
+    print(f"\nSaved to Supabase ({TABLE_NAME}): {record['assessment_id']}")
 
     user_profile = build_user_profile(user_id)
     if user_profile is not None:

@@ -8,31 +8,6 @@ simulated messages (some phishing, some genuine) are SENT to them, like real one
                      user REPORTS it        -> recognised + reported (good)
                      nothing until expiry   -> ignored (not reported)
   genuine message:   opening / ignoring is fine; REPORTING it is a false alarm
-
-Defaults (all can be changed - see the constants and the .env settings below):
-  * 4 messages: 3 phishing + 1 genuine, different tricks, AI-written, themed on the training area
-  * the first one arrives DRILL_DELAY_MINUTES after the quiz (default 24 h = time to follow the steps)
-  * the rest are spread over DRILL_PERIOD_MINUTES (default 7 days), at slightly random times
-  * each message stays open MESSAGE_WINDOW_MINUTES (default 24 h)
-  * PASS = no phishing link clicked, AND >= 2/3 of the phishing messages reported,
-           AND at most 1 false report
-  * pass -> the next area unlocks.  fail -> another evaluation round; after 2 failed rounds the
-    AI writes a new, easier plan for the area.
-
-Nothing here needs the app to be open: training_scheduler (a timer in main.py) calls
-process_all() every minute, which sends due messages (email / push), closes expired ones and
-finishes the evaluation. The state is also recalculated whenever the app asks.
-
-CONSENT: the user must agree once (POST /training/{user_id}/consent) that CyberShield may test
-them with simulated security messages. They are NOT told when or what. After EVERY message
-there is a debrief that explains what gave it away.
-
-For quick testing / the demo put these in backend/.env:
-    DRILL_DELAY_MINUTES=0
-    DRILL_PERIOD_MINUTES=0          (all messages arrive at once)
-    MESSAGE_WINDOW_MINUTES=5
-
-Only the area name and level go to the AI - never a name or id.
 """
 
 import base64
@@ -83,9 +58,22 @@ def _now():
     return datetime.now(timezone.utc)
 
 
+# DRILL_MODE=demo  -> first message arrives immediately (0 min), rest over 2 minutes
+# DRILL_MODE=real  -> 1 day wait, messages spread over 7 days, each open for 1 day (default)
+MODES = {
+    "real": {"DRILL_DELAY_MINUTES": 1440, "DRILL_PERIOD_MINUTES": 7 * 1440, "MESSAGE_WINDOW_MINUTES": 1440},
+    "demo": {"DRILL_DELAY_MINUTES": 0, "DRILL_PERIOD_MINUTES": 2, "MESSAGE_WINDOW_MINUTES": 10},
+}
+
+
 def _minutes(name, default):
+    training.load_env()
+    raw = (os.environ.get(name) or "").strip()
+    if not raw:
+        mode = MODES.get(os.environ.get("DRILL_MODE", "real").strip().lower(), MODES["real"])
+        return mode.get(name, default)
     try:
-        return max(0, int(os.environ.get(name, default)))
+        return max(0, int(raw))
     except ValueError:
         return default
 
@@ -102,7 +90,7 @@ def _parse(text):
 # Asking the AI for the messages
 # ---------------------------------------------------------------------
 def build_drill_prompt(area, level):
-    theme = AREA_THEMES.get(area, "a believable everyday scam message")
+    theme = AREA_THEMES.get(area, f"a believable everyday scam message related to {_pretty(area)}")
     return (
         f"Write exactly {PHISHING_COUNT} PHISHING messages and {GENUINE_COUNT} GENUINE message(s) for a "
         "cybersecurity training drill.\n"
@@ -232,7 +220,7 @@ def ensure_evaluation(progress, area):
     out, last = [], start
     for i, m in enumerate(messages):
         when = start + spacing * i
-        if 0 < i < n - 1 and spacing > timedelta(0):  # slightly random, but never out of order
+        if 0 < i < n - 1 and spacing > timedelta(0):
             when += timedelta(seconds=random.uniform(-0.1, 0.1) * spacing.total_seconds())
         when = max(when, last)
         last = when
@@ -279,7 +267,7 @@ def _view(msg):
         "status": "open" if msg["action"] is None else "done",
         "your_action": msg["action"],
     }
-    if msg["action"] is not None:       # the reveal only comes AFTER the user has acted / it expired
+    if msg["action"] is not None:
         view["debrief"] = _debrief(msg)
     return view
 
@@ -310,7 +298,7 @@ def _finish(progress, area, profile=None):
     s["rule_passed"] = s["passed"]
     judged = training_eval.evaluate(entry, area, progress["plans"].get(area, {}).get("sebis_level", "Medium"),
                                     s, ev["messages"])
-    s["passed"] = judged["decision"] == "mastered"      # rules AND the AI must agree
+    s["passed"] = judged["decision"] == "mastered"
     result = {
         "state": "resolved", "area": area, "attempt": ev["attempt"], **s,
         "messages": [_debrief(m) for m in ev["messages"]],
@@ -339,7 +327,8 @@ def _finish(progress, area, profile=None):
             "final_level": evals[-1].get("level"),
             "passed_at": result["resolved_at"],
         })
-        _, nxt = _next_item(profile["training_brief"], progress["completed"]) if profile else (None, None)
+        brief = training.focus_brief(profile, progress.get("focus_theory")) if profile else []
+        _, nxt = _next_item(brief, progress["completed"])
         result["next_area"] = nxt["area"] if nxt else None
         result["all_done"] = nxt is None
         result["message"] = (f"Area mastered! {judged['feedback']}"
@@ -348,23 +337,17 @@ def _finish(progress, area, profile=None):
     else:
         entry["eval_fails"] = entry.get("eval_fails", 0) + 1
         result["new_plan_next"] = entry["eval_fails"] >= FAILS_BEFORE_NEW_PLAN
-        problems = []
-        if s["fell_victim"]:
-            problems.append(f"you opened {s['fell_victim']} phishing link(s) - in real life that could "
-                            "have got you hacked")
-        if s["report_rate"] < MIN_REPORT_RATE:
-            problems.append(f"you reported only {s['reported']} of {s['phishing_total']} phishing messages")
-        if s["false_alarms"] > MAX_FALSE_ALARMS:
-            problems.append("you reported too many genuine messages")
         what = ("You did not master this area yet. " + judged["feedback"]
                 + (f" Focus: {judged['coaching_focus']}" if judged["coaching_focus"] else ""))
         if result["new_plan_next"]:
-            entry["quiz_passed"] = False  # start again from a new, easier plan
-            entry["fails"] = FAILS_BEFORE_NEW_PLAN  # makes training.generate_training write a new plan
+            entry["quiz_passed"] = False
+            entry["fails"] = FAILS_BEFORE_NEW_PLAN
             result["message"] = what + " We will give you a new, easier plan for this area."
         else:
             result["message"] = what + " Review your steps - you will be evaluated again."
     progress["last_drill_result"] = result
+    _note(progress, f"result-{area}-{ev['attempt']}", "result", "Your progress check is complete",
+          "Open the chat to see how you did.", result["resolved_at"])
     add_chat(progress, area, "assistant", result["message"], kind="evaluation_result",
              data={"decision": judged["decision"], "proficiency": judged["proficiency"],
                    "level": judged["level"], "evidence": judged["evidence"],
@@ -372,7 +355,7 @@ def _finish(progress, area, profile=None):
     save_progress(progress)
 
     if not s["passed"] and not result["new_plan_next"]:
-        try:  # next round straight away (or later, if the AI is down)
+        try:
             ensure_evaluation(progress, area)
         except (TrainingUnavailable, ConsentRequired):
             pass
@@ -396,7 +379,79 @@ def _refresh(progress, area, profile=None):
 
 
 # ---------------------------------------------------------------------
-# Public functions (the app / endpoints use these)
+# Notifications
+# ---------------------------------------------------------------------
+def _note(progress, nid, kind, title, body, at, **extra):
+    notes = progress.setdefault("notifications", [])
+    if any(n["id"] == nid for n in notes):
+        return False
+    notes.append({"id": nid, "kind": kind, "title": title, "body": body, "at": at, "read": False, **extra})
+    return True
+
+
+def _msg_note_id(area, attempt, message_id):
+    return f"msg-{area}-{attempt}-{message_id}"
+
+
+def _sync_notes(progress, area):
+    """Adds a notification for every message that has been delivered. Returns True if something was added."""
+    ev = _entry(progress, area).get("evaluation") if area else None
+    if not ev:
+        return False
+    now, changed = _now(), False
+    for m in ev["messages"]:
+        if now < _parse(m["deliver_at"]):
+            continue
+        v = m["message"]
+        word = "email" if str(v["channel"]).lower() == "email" else "message"
+        body = " ".join((v["subject"] or v["message"]).split())[:90]
+        changed |= _note(progress, _msg_note_id(area, ev["attempt"], m["id"]), "message",
+                         f"New {word} from {v['sender']}", body, m["deliver_at"], message_id=m["id"],
+                         channel=v["channel"])
+        if m["action"] is not None:
+            for n in progress["notifications"]:
+                if n["id"] == _msg_note_id(area, ev["attempt"], m["id"]) and not n["read"]:
+                    n["read"], changed = True, True
+    return changed
+
+
+def _notes_view(progress):
+    notes = sorted(progress.get("notifications", []), key=lambda n: n["at"], reverse=True)
+    out = []
+    for n in notes:
+        target = ({"screen": "inbox", "message_id": n.get("message_id")} if n["kind"] == "message"
+                  else {"screen": "chat"})
+        out.append({"id": n["id"], "kind": n["kind"], "title": n["title"], "body": n["body"], "at": n["at"],
+                    "read": n["read"], "channel": n.get("channel"), "target": target})
+    return {"unread": sum(not n["read"] for n in out), "notifications": out}
+
+
+@locked
+def get_notifications(user_id):
+    """The notification list. Also closes expired messages and logs messages that just arrived."""
+    progress, area, entry = _active(user_id)
+    if area is not None and entry.get("quiz_passed"):
+        get_drill(user_id)
+        progress, area, entry = _active(user_id)
+        if _sync_notes(progress, area):
+            save_progress(progress)
+    return _notes_view(progress)
+
+
+@locked
+def mark_notifications_read(user_id, ids=None):
+    """Marks the given notification ids (or all of them, if ids is None) as read."""
+    progress = load_progress(user_id)
+    wanted = None if ids is None else {str(i) for i in ids}
+    for n in progress.get("notifications", []):
+        if wanted is None or n["id"] in wanted:
+            n["read"] = True
+    save_progress(progress)
+    return _notes_view(progress)
+
+
+# ---------------------------------------------------------------------
+# Public functions
 # ---------------------------------------------------------------------
 def _active(user_id):
     progress = load_progress(user_id)
@@ -430,11 +485,6 @@ def set_contact(user_id, email=None, push_token=None):
 
 @locked
 def get_drill(user_id, profile=None):
-    """
-    none | consent_required | preparing | scheduled | in_progress | resolved
-    The inbox only holds messages that have already been delivered. How many messages there are,
-    and when the next one comes, is NOT revealed.
-    """
     progress, area, entry = _active(user_id)
     last = progress.get("last_drill_result")
     if area is None or not entry.get("quiz_passed"):
@@ -478,7 +528,11 @@ def _act(user_id, message_id, action, profile=None):
         raise ValueError("That message was not found.")
     if msg["action"] is not None:
         return {"debrief": _debrief(msg), "evaluation_finished": False, "result": None}
+    _sync_notes(progress, area)
     msg["action"], msg["acted_at"] = action, _iso(_now())
+    for n in progress.get("notifications", []):
+        if n["id"] == _msg_note_id(area, entry["evaluation"]["attempt"], message_id):
+            n["read"] = True
     debrief = _debrief(msg)
     result = _refresh(progress, area, profile)
     if result is None:
@@ -488,25 +542,21 @@ def _act(user_id, message_id, action, profile=None):
 
 @locked
 def click_message(user_id, message_id, profile=None):
-    """The user tapped the link inside a message."""
     return _act(user_id, message_id, "clicked", profile)
 
 
 @locked
 def report_message(user_id, message_id, profile=None):
-    """The user reported a message as phishing."""
     return _act(user_id, message_id, "reported", profile)
 
 
 @locked
 def force_ignore(user_id, message_id):
-    """TESTING helper (terminal only): the user did nothing and the time ran out."""
     return _act(user_id, message_id, "ignored")
 
 
 @locked
 def click_by_token(token):
-    """Tracking link /sim/click/<token> (also works from an email). Returns a debrief dict, or None."""
     try:
         user_id = _decode_user(token.split(".", 1)[0])
     except Exception:
@@ -533,7 +583,7 @@ def process_user(user_id):
     progress, area, entry = _active(user_id)
     if area is None or not entry.get("quiz_passed"):
         return 0
-    get_drill(user_id)  # creates the evaluation if needed + closes expired messages
+    get_drill(user_id)
     progress, area, entry = _active(user_id)
     ev = entry.get("evaluation") if entry else None
     if not ev:
@@ -544,7 +594,7 @@ def process_user(user_id):
             m["channels"] = training_notify.notify(progress.get("contact"), _view(m))
             m["notified"] = True
             sent += 1
-    if sent:
+    if _sync_notes(progress, area) or sent:
         save_progress(progress)
     return sent
 
@@ -560,7 +610,7 @@ def process_all():
                     user_id = json.load(f).get("user_id")
                 if user_id:
                     total += process_user(user_id)
-            except Exception as e:  # one broken file must never stop the timer
+            except Exception as e:
                 print(f"[drill timer] {name}: {e}")
     return total
 

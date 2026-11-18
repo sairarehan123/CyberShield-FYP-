@@ -4,3 +4,7 @@
 //   navigation.navigate('Chatbot', { userId, userName })
 export { default } from './ChatbotApp';
 export { default as Chatbot } from './ChatbotApp';
+
+// For the host app's notification screen (see notifications.js):
+export { ChatbotNotificationList, useChatbotNotifications } from './notifications';
+export { getNotifications as getChatbotNotifications, markNotificationsRead as markChatbotNotificationsRead } from './api';
